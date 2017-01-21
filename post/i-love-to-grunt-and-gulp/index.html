@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/i-love-to-grunt-and-gulp/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2015-02-14T18:50:20-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>I love to Grunt and Gulp &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">I love to Grunt and Gulp</h3>
+        <p class="f-post-time"><time datetime="2015-02-14T18:50:20-07:00">February 14, 2015</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <p>(Happy Valentine&rsquo;s Day, ya&rsquo;ll. Get off the computer and go buy something nice for your woman.)</p>
+
+<p>Sometimes I like to pretend that I know stuff, when I really don&rsquo;t. Gulp is one of those things. :)</p>
+
+<p>I need to get better at finding solutions to a lot of the repetitive tasks that I do on a daily basis. Up until now, let&rsquo;s say I was about to push some production code to the web. Of course I needed to minify the CSS first. So I would copy the code, hit up <a href="http://cssminifier.com/" target="_blank">CSS Minifier</a>, paste the code back into my CSS file, and then rename the file, <code>styles.min.css</code>. This wouldn&rsquo;t be that big of an issue if I only did it once upon completion of a site. But it never really worked out that way. I&rsquo;d forget to change a specific style last minute, and then I&rsquo;d have to copy all of my code into CSS Minifier and do it all again.</p>
+
+<p>Wouldn&rsquo;t it be great if there were a service that did all of this for you, automatically? You&rsquo;re in luck! They&rsquo;re called &#8220;Task Runners&#8221;. I&rsquo;m going to be focusing on &#8220;Gulp&#8221;, which is a JavaScript task runner, built off of Node.js.</p>
+
+<p>Now, to many of you, you&rsquo;ve probably been using a task runner of some sort for years. For a long time, Grunt has been the big name in the game. Not too long ago, Gulp emerged and has been hogging the spotlight. It&rsquo;s not only faster at rendering, but it also has an easier-to-read syntax.</p>
+
+<p>Now, I&rsquo;m too lazy to reinvent the wheel and write a tutorial on how to install and run gulp. <a href="http://travismaynard.com/writing/getting-started-with-gulp" target="_blank">This guy</a> does a much better job than I could do, anyway.</p>
+
+<p>But I did at least want to post my gulpfile and say how freaking awesome it is. By simply running the <code>gulp</code> command, in less than second, I can minify my CSS, JS, and HTML, concatenate multiple files into one, rename them automatically, add in browser prefixes, and then reload the browser window. In less than a second. Boom. Pretty nifty, huh? Additionally, my gulpfile will watch for any changes to those files, and rerun all of those tanks without me doing anything. Dope.</p>
+
+<pre><code class="language-js">var gulp = require('gulp'); 
+
+/**********************************************
+****************** Modules ********************
+***********************************************/
+var sass = require('gulp-ruby-sass'); //Compiles SASS
+var autoprefix = require('gulp-autoprefixer'); //Automatically throws in browser prefixes
+var minifycss = require('gulp-minify-css'); //Minifies CSS
+var rename = require(&quot;gulp-rename&quot;); //Renames files to .min after minifying
+var minifyhtml = require('gulp-minify-html'); //Minifies the HTML
+var concat = require('gulp-concat'); //Concatenates all source files into one file
+var uglify = require('gulp-uglify'); //Removes whitespaces from JavaScript
+var imagemin = require('gulp-imagemin'); //Compresses images
+var livereload = require('gulp-livereload'); //Live reload
+var plumber = require('gulp-plumber'); //Error handling
+
+/**********************************************
+****************** Functions ********************
+***********************************************/
+
+// css auto-prefix, minify, and rename
+gulp.task('styles', function() {
+    return sass('src/styles/', {style:'expanded'}).on('error', function(handleError){ console.log('Error: There\'s a problem with your SASS, stupid. Fix that shiz.'); })
+         .pipe(autoprefix('last 2 versions'))
+             .pipe(minifycss())
+                .pipe(rename({suffix:'.min'}))
+                  .pipe(gulp.dest('build/styles/'))
+                      .pipe(livereload());
+});
+
+// minify new images
+gulp.task('imagemin', function() {
+      gulp.src('src/images/*.jpg').on('error', function(handleError){ console.log('Error: There\'s a problem with your images, stupid. Fix that shiz.'); })
+          .pipe(imagemin())
+              .pipe(gulp.dest('build/images/'));
+});
+
+// minify new or changed HTML pages
+gulp.task('html', function() {
+        gulp.src('src/*.html')
+            .pipe(minifyhtml())
+                .pipe(gulp.dest('build/'))
+                .pipe(livereload());
+});
+
+// JS concat, strip debugging and minify
+gulp.task('scripts', function() {
+        gulp.src('src/scripts/*.js')
+            .pipe(concat('script.js'))
+                .pipe(uglify())
+                    .pipe(rename({suffix:'.min'}))
+                        .pipe(gulp.dest('build/scripts/'))
+                    .pipe(livereload());
+});
+
+/**********************************************
+************ Watch &amp; Build Tasks **************
+***********************************************/
+gulp.task('default', ['styles', 'html', 'scripts', 'imagemin'], function() {
+        // watch for CSS changes &amp; minify
+        gulp.watch('./src/styles/*.scss', function() {
+          livereload.listen();
+                 gulp.run('styles');
+                 });
+
+        // watch for html &amp;amp; minify
+        gulp.watch('./src/*.html', function() {
+          livereload.listen();
+            gulp.run('html');
+                });
+
+        // watch for JS changes
+        gulp.watch('./src/scripts/*.js', function() {
+          livereload.listen();
+            gulp.run('scripts');
+                });
+
+        // watch for new images
+        gulp.watch('./src/images/*.jpg', function() {
+            gulp.run('imagemin');
+              });
+});
+</code></pre>
+
+<p>This isn&rsquo;t even the tip of the iceberg. There are hundreds of gulp plugins, and I have yet to play with the majority of them. But these seem to be the most basic/common plugins, and so far, they&rsquo;ve proved invaluable.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=I%20love%20to%20Grunt%20and%20Gulp&url=http%3a%2f%2fbrycematheson.io%2fpost%2fi-love-to-grunt-and-gulp%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fi-love-to-grunt-and-gulp%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fi-love-to-grunt-and-gulp%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

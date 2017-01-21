@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="How to scrape a webpage using powershell">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/webscraping-with-powershell/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2016-11-24T12:26:23-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Webscraping with Powershell &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Webscraping with Powershell</h3>
+        <p class="f-post-time"><time datetime="2016-11-24T12:26:23-07:00">November 24, 2016</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <p>Webscraping often becomes a touchy subject in regards to the legality of the whole thing. Obviously, stealing/scraping copyrighted content and claiming it as your own crosses those boundaries, but it can also provide some great benefits when done within legal limits.</p>
+
+<p>A few months back, I was shopping for a new car and found myself checking Craigslist multiple times a day within a specific criteria. I got tired of filling out the &ldquo;Filter&rdquo; forms over and over again for specific data and then thought to myself, &ldquo;I bet I could script this.&rdquo; Where Craigslist is already public data anyway, and I was only scraping it for my own personal use, I felt it was fine.</p>
+
+<p>First, I began by defining a few variables and creating a few arrays to hold my data. I then looped through the number of pages that I specified earlier, each time invoking a new web request and adding those results to my <span class="smallcode">$Pages</span> array.</p>
+
+<pre><code class="language-powershell">$MaxPages = 2
+$MinPrice = 2500
+$MaxPrice = 10000
+$Cars = @()
+$Pages = @()
+
+For ($CurrentPage=0; $CurrentPage -lt $MaxPages; $CurrentPage++) {
+    $WebPage = Invoke-WebRequest &quot;http://eastidaho.craigslist.org/search/cta?hasPic=1&amp;min_price=$MinPrice&amp;max_price=$MaxPrice&amp;s=$($CurrentPage * 100)&quot;
+    $Pages += $WebPage.ParsedHtml.body.innerHTML
+}
+</code></pre>
+
+<p>Now contained in my <span class="smallcode">$Pages</span> array are two pages of results (although I could&rsquo;ve told it to loop through any other number of pages that I wanted). Before we can extract any data from these pages, we need to &ldquo;explode&rdquo; them, or break them up into individual results. Using my browser, I inspected the code and found that each new car posting was broken up by a new <span class="smallcode">result-row</span> CSS class.</p>
+
+<p><img src="http://brycematheson.io/img/post_images/webscrape-with-powershell_2.jpg" alt="Browser Property Inspector" /></p>
+
+<p>We then use this specific line of code to break up our long result set into individual pieces, and then store them into a new <span class="smallcode">$Results</span> array.</p>
+
+<pre><code class="language-powershell">$Results = $Pages -split &quot;&lt;li class=`&quot;result-row`&quot;&quot;
+</code></pre>
+
+<p>Now, here comes the fun part. We loop through all of the items within that array. For each item in the array, we will run it through a set of regular expressions looking for individual pieces of data. If it finds a match, it will store it in a <span class="smallcode">$matches</span> variable, which we can then assign to a custom powershell object.</p>
+
+<p>In this case, I collected the Craigslist listing ID, description, price, and location for each car, but we could expand this to an infinite number of possibilites.</p>
+
+<p>And then finally, once our custom object has been populated, we assign that to our <span class="smallcode">$Cars</span> global array (that was declared outside of this loop, so we don&rsquo;t destroy our results every time it&rsquo;s run).</p>
+
+<pre><code class="language-powershell">ForEach ($Item in $Results) {
+
+	# search for a 10-digit number
+    if ($Item -match '\d{10}') {
+        $ID = $matches[0]
+    }
+
+    # search for the text between two anchor tags, which contains a class of 'data-id' and a 10-digit number
+    if ($Item -match 'data-id=&quot;\d{10}\&quot;&gt;(.*?)&lt;/a&gt;') {
+        $Description = $matches[0]
+        $Description = ($Description -replace &quot;.*`&quot;&gt;&quot;, &quot;&quot;) -replace &quot;&lt;/a&gt;&quot;
+    }
+
+    # look for 3 to 6 digits that are preceded by a dollar sign
+    if ($Item -match '\$\d{3,6}') {
+        $Price = $matches[0]
+    }
+
+    # look for a specific date-time format
+    if ($Item -match '\d{4}\-\d{2}\-\d{2}\ \d{2}\:\d{2}') {
+        $DatePosted = $matches[0]
+    }
+
+    # look for a single word, wrapped in parentheses, then remove them
+    if ($Item -match '\(\w+\)') {
+        $Location = $matches[0]
+        $Location = ($Location -replace &quot;[()]&quot;)
+    }
+    
+    # insert our stripped data into a custom powershell object
+    $ItemObject = New-Object -TypeName PSObject -Property @{
+        'ID' = $ID
+        'Description' = $Description
+        'Price' = $Price
+        'DatePosted' = $DatePosted
+        'Location' = $Location
+        
+    }
+    $Cars += $ItemObject
+}
+</code></pre>
+
+<p>Once we&rsquo;ve looped through all the results, we can display our results by simply calling our array. Because I&rsquo;m picky, I wanted the data displayed in a specific order, which I explicitly specified.</p>
+
+<pre><code class="language-powershell">$Cars | Format-Table ID,Description,Price,Location,DatePosted
+</code></pre>
+
+<p>Running all of the above code, we get the following results:</p>
+
+<p><img src="http://brycematheson.io/img/post_images/webscrape-with-powershell_1.jpg" alt="Powershell Results" /></p>
+
+<p>Pretty cool, eh? Again, this can be modified to include any number of search criteria by modifying the query string in the first step and creating additional regular expressions.</p>
+
+<p>And if all of that was too difficult to follow, here&rsquo;s the complete code block:</p>
+
+<pre><code class="language-powershell">$MaxPages = 2
+$MinPrice = 2500
+$MaxPrice = 10000
+$Cars = @()
+$Pages = @()
+
+For ($CurrentPage=0; $CurrentPage -lt $MaxPages; $CurrentPage++) {
+    $WebPage = Invoke-WebRequest &quot;http://eastidaho.craigslist.org/search/cta?hasPic=1&amp;min_price=$MinPrice&amp;max_price=$MaxPrice&amp;s=$($CurrentPage * 100)&quot;
+    $Pages += $WebPage.ParsedHtml.body.innerHTML
+}
+
+$Results = $Pages -split &quot;&lt;li class=`&quot;result-row`&quot;&quot;
+
+ForEach ($Item in $Results) {
+
+	# search for a 10-digit number
+    if ($Item -match '\d{10}') {
+        $ID = $matches[0]
+    }
+
+    # search for the text between two anchor tags, which contains a class of 'data-id' and a 10-digit number
+    if ($Item -match 'data-id=&quot;\d{10}\&quot;&gt;(.*?)&lt;/a&gt;') {
+        $Description = $matches[0]
+        $Description = ($Description -replace &quot;.*`&quot;&gt;&quot;, &quot;&quot;) -replace &quot;&lt;/a&gt;&quot;
+    }
+
+    # look for 3 to 6 digits that are preceded by a dollar sign
+    if ($Item -match '\$\d{3,6}') {
+        $Price = $matches[0]
+    }
+
+    # look for a specific date-time format
+    if ($Item -match '\d{4}\-\d{2}\-\d{2}\ \d{2}\:\d{2}') {
+        $DatePosted = $matches[0]
+    }
+
+    # look for a single word, wrapped in parentheses, then remove them
+    if ($Item -match '\(\w+\)') {
+        $Location = $matches[0]
+        $Location = ($Location -replace &quot;[()]&quot;)
+    }
+    
+    # insert our stripped data into a custom powershell object
+    $ItemObject = New-Object -TypeName PSObject -Property @{
+        'ID' = $ID
+        'Description' = $Description
+        'Price' = $Price
+        'DatePosted' = $DatePosted
+        'Location' = $Location
+        
+    }
+    $Cars += $ItemObject
+}
+
+$Cars | Format-Table ID,Description,Price,Location,DatePosted
+</code></pre>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Webscraping%20with%20Powershell&url=http%3a%2f%2fbrycematheson.io%2fpost%2fwebscraping-with-powershell%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fwebscraping-with-powershell%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fwebscraping-with-powershell%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+            	<span class="f-post-tags"><i class="fa fa-tag"></i>
+            	test
+            	</span>
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

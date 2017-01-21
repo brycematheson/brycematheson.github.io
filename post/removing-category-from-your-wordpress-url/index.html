@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/removing-category-from-your-wordpress-url/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2014-07-02T18:50:20-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Removing &#39;category&#39; from your WordPress URL &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Removing &#39;category&#39; from your WordPress URL</h3>
+        <p class="f-post-time"><time datetime="2014-07-02T18:50:20-07:00">July 2, 2014</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        
+
+<p>There&rsquo;s no doubt about it. WordPress is popular, easy to use, and here to stay. It&rsquo;s estimated that more than 20% of the internet is currently running on the CMS. With drag-and-drop features, thousands of themes, and super-simple customization, it&rsquo;s easy to see why. That doesn&rsquo;t mean WordPress doesn&rsquo;t come without any quirks, though.</p>
+
+<p>One of those many quirks (annoyances, really) are the &#8216;categories&rsquo; feature. While it&rsquo;s a piece of cake to categorize posts into various sections, there&rsquo;s always been one thing that has bugged me. In your browser, underneath a specific category, the URL will always look something like this: &ldquo;<a href="http://www.mysite.com/category/agriculture&quot;">http://www.mysite.com/category/agriculture&quot;</a>. Have you ever wanted to get rid of the &#8220;category&#8221; piece so that your url simply looks like this: &ldquo;<a href="http://www.mysite.com/agriculture&quot;?">http://www.mysite.com/agriculture&quot;?</a></p>
+
+<p>It&rsquo;s actually quite simple to do. If you&rsquo;re a fan of plugins, you can use the <a href="https://wordpress.org/plugins/fv-top-level-cats/" target="_blank">FV Top Level Categories</a> plugin. There&rsquo;s no configuration, no settings. Just activate the plugin, and you&rsquo;re ready to go. Now, with that being said, I&rsquo;m not against plugins by any means, but if I can find another way around, I&rsquo;ll usually take that route.</p>
+
+<h3 id="option-2">Option 2</h3>
+
+<p>You can simple change the settings under your permalinks in WordPress. In WordPress, on the left side menu, go to **Settings &#8211;&gt; Permalinks**.</p>
+
+<p>Under &#8220;Custom Structure,&#8221; enter &#8220;<code>/%category%/%postname%/</code>&#8221;. Also, enter a &#8220;<code>.</code>&#8221; under &#8220;Category base&#8221; as shown below in the photo.</p>
+
+<p><img src="http://brycematheson.io/img/post_images/permalinks_wordpress.png" alt="RAID" /></p>
+
+<p>Select &#8220;Save Changes&#8221;, and you should be good to go. From my experience, this hasn&rsquo;t broken any links, and everything works as it should. While this works for now, there&rsquo;s no telling if any future updates or upgrades to WordPress can or will break this.</p>
+
+<p>Happy tweaking!</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Removing%20%27category%27%20from%20your%20WordPress%20URL&url=http%3a%2f%2fbrycematheson.io%2fpost%2fremoving-category-from-your-wordpress-url%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fremoving-category-from-your-wordpress-url%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fremoving-category-from-your-wordpress-url%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/visual-form-builder-paypal-redirect/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2014-10-03T18:50:20-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Visual Form Builder PayPal Redirect &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Visual Form Builder PayPal Redirect</h3>
+        <p class="f-post-time"><time datetime="2014-10-03T18:50:20-07:00">October 3, 2014</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <p>For anyone who knows me even slightly well knows that I’m a huge fan of WordPress. I use it as my go-to CMS for all of the websites I create, whether for myself or for clients. It gives me the flexibility I need in a well designed format, and it gives my clients the ability to make changes to their own websites without knowing any code.</p>
+
+<p>Some people will give you a giant list of plugins that you have to download when first setting up your WordPress site. My theory is the opposite. The fewer plugins, the better. I don’t install something if I don’t need it, just to have it. One plugin I almost always find myself installing, though, is <a href="https://wordpress.org/plugins/visual-form-builder/" target="_blank">Visual Form Builder</a>. It makes creating HTML forms a piece of cake. Sure, you can code them all yourself, but why when this is so easy? It offers plenty of features, such as sending a copy of the form to administrators, to the person filling out the form, and so many other features. There is a <a href="http://vfbpro.com/" target="_blank">Pro version</a> as well if you need it, but I’ve found that all the features I need are offered in the free version.</p>
+
+<p>One thing I often do for clients is build a form using this plugin so that they can collect some data or information from their customers. Once the customers click “Submit” on the form, it redirects themÂ to a PayPal link where they can purchase a product. All of this is done through Visual Form Builder. On the “Confirmation” section, you have the option of redirecting the user to a different page in your WordPress site, to a different URL, or just display some text. Here is where I select “URL” and then post in the link that (under the email tab, not the WordPress form code) that PayPal has given me.</p>
+
+<p>This morning, however, I ran into a new problem I’d never seen before. Upon redirection, I saw this error through PayPal:</p>
+
+<p><img src="http://brycematheson.io/img/post_images/visualformbuilder1.png" alt="Visual Form Builder" /></p>
+
+<p>I did everything that I could think of, and I could not for the life of me figure out the issue. It kept saying that I was missing “required information”. The thing was that I wasn’t sending any information. And what was even more baffling was that if I copied the link directly into a browser, the URL worked fine, and I was successfully redirected to PayPal. Therefore, the problem lies with Visual Form Builder.</p>
+
+<p>I scoured the internet. I found a post on the plugin support page with someone having the same issue as me, but it was a quick dead-end. It was over 2 years old, and no problem had been found. The developer basically said, “Buy the Pro version.” And then the topic was closed. Well, that was no help.</p>
+
+<p>I continued trying. After a lot of trial and error, I finally found a workaround. I used the <a href="https://goo.gl/" target="_blank">Google Link Shortener</a>, and for some reason, that worked. I pasted in my PayPal “email” link, and then Google spit out a shorter URL. I pasted that into the “Redirect” field under the confirmation settings, and voila! It worked!</p>
+
+<p><img src="http://brycematheson.io/img/post_images/visualformbuilder2.png" alt="Visual Form Builder" /></p>
+
+<p>This seemed to work for me. It’s not ideal, but it’ll do for now. Have you had a similar problem? Does this work for you? Let me know what you think.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Visual%20Form%20Builder%20PayPal%20Redirect&url=http%3a%2f%2fbrycematheson.io%2fpost%2fvisual-form-builder-paypal-redirect%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fvisual-form-builder-paypal-redirect%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fvisual-form-builder-paypal-redirect%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

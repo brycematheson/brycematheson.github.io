@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/slow-windows-10-performance-in-vmware-fusion/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2016-01-25T22:35:27-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Slow Windows 10 Performance in VMWare Fusion &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Slow Windows 10 Performance in VMWare Fusion</h3>
+        <p class="f-post-time"><time datetime="2016-01-25T22:35:27-07:00">January 25, 2016</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <p>When Windows 10 was released in July, I had a little bit of a bad taste in my mouth and a sense that it just wasn&rsquo;t quite &ldquo;finished&rdquo; yet. It seemed to me that it was lacking the polish that really completed the project and made it a viable choice for use as a daily OS. Turns out my bad first impression was mostly due to that fact that I was running it through VMWare Fusion on my Mac. You can read <a href="http://www.brycematheson.io/post/windows-10-first-impressions/">my initial impressions here.</a></p>
+
+<p>After being forced to upgrade to Windows 10 on desktop at work, I realized that I actually really enjoyed Windows 10. I didn&rsquo;t experience any of the lag or performance issues that I had on my Mac back home, even though my MacBook is newer and faster.</p>
+
+<p>I&rsquo;ve been too busy to be able to revisit the issue and try to get a version that I&rsquo;m actually content with on my MacBook Pro. I had no issues whatsoever running Windows 7 or Windows 8 as a VM through VMWare Fusion and performance wasn&rsquo;t an issue at all, even with just 1 or 2GB of memory allocated to it. I don&rsquo;t use it for any hardcore video editing or anything, but just the occasional Windows app that doesn&rsquo;t play nicely with Mac OS X.</p>
+
+<p>This weekend, I finally had a chance to play around with a bit more. Previously, Windows 10 on VMWare would be <em>painfully slow</em>. Beyond the point of being usable.</p>
+
+<p>I&rsquo;ve found a &ldquo;sort of&rdquo; workaround. I installed the 32-bit version of Windows 10 (on accident), and was surprised that it didn&rsquo;t seem to suffer (as badly) with lag as the 64-bit version did. It&rsquo;s still not great, and it&rsquo;s still not the same as running it natively on its own, but at least it&rsquo;s now usable. I&rsquo;ve also disabled &ldquo;3D Acceleration&rdquo; in the Display Settings, as well as Folder Sharing. Doing these three things together makes for a usable box.</p>
+
+<p>Now, you may be thinking, &ldquo;Really? You&rsquo;re going to make me use a 32-bit OS in 2016? That&rsquo;s soooooo 10 years ago.&rdquo; Yes, well, deal with it. For me, the main benefits I get from running a 64-bit OS is being able to take full advantage of memory (as we all know that 32-bit OS&rsquo;s can only use a maximum of 3.5GB). While this would normally be an issue, it isn&rsquo;t for me, as I never allocate more than 2GB of RAM to my VMs. My MacBook only has a total of 8GB, so I don&rsquo;t want to starve my main OS of resources.</p>
+
+<p>Installing VM Tools and updating to the latest build of Windows 10 (1511, released in November) has seemed to improve speed as well.</p>
+
+<p>Again, it&rsquo;s not as responsive and speedy as I would like it to be, but it&rsquo;s at least usable until VMWare can figure out their crap.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Slow%20Windows%2010%20Performance%20in%20VMWare%20Fusion&url=http%3a%2f%2fbrycematheson.io%2fpost%2fslow-windows-10-performance-in-vmware-fusion%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fslow-windows-10-performance-in-vmware-fusion%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fslow-windows-10-performance-in-vmware-fusion%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

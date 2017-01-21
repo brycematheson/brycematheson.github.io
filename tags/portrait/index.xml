@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Portrait on Brycematheson.io</title>
+    <link>http://brycematheson.io/tags/portrait/index.xml</link>
+    <description>Recent content in Portrait on Brycematheson.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Brycematheson.io. All Rights Reserved.</copyright>
+    <atom:link href="http://brycematheson.io/tags/portrait/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Ashton Headshot</title>
+      <link>http://brycematheson.io/photo/ashton-headshot/</link>
+      <pubDate>Wed, 14 May 2014 07:23:30 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/photo/ashton-headshot/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://brycematheson.io/photo/ashton-headshot/IMG_6960-Edit.jpg&#34;&gt;&lt;img src=&#34;http://brycematheson.io/photo/ashton-headshot/IMG_6960-Edit.jpg&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

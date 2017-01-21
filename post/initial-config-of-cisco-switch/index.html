@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/initial-config-of-cisco-switch/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2016-01-30T16:00:33-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Cisco Switch Initial Configuration &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Cisco Switch Initial Configuration</h3>
+        <p class="f-post-time"><time datetime="2016-01-30T16:00:33-07:00">January 30, 2016</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <iframe width="700" src="https://www.youtube.com/embed/NXVMAZi8eF8" frameborder="0" allowfullscreen></iframe>
+
+<p>The following are the different steps we&rsquo;ll accomplish in this video:</p>
+
+<p><li>Configure Hostname</li>
+<li>Disable name resolution</li>
+<li>Configure management IP address</li>
+<li>Configure default gateway</li>
+<li>Configure a local username and password</li>
+<li>Configure enable password</li>
+<li>Configure secret password</li>
+<li>Configure console password</li>
+<li>Configure synchronous logging on console</li>
+<li>Configure an exec timeout of 10 minutes over console</li>
+<li>Configure telnet access with a password</li>
+<li>Configure synchronous logging over vty (telnet) lines</li>
+<li>Configure exec timeout of 5 minutes over vty (telnet) lines</li>
+<li>Configure vty (telnet) and console lines to use the local username and password</li>
+<li>Encrypt all current and future vty, console, and enable passwords</li>
+<li>Once you’ve done all this be SURE to copy your running-config to startup-config</li></p>
+
+<p>You can download the Word Doc of notes <a href="http://brycematheson.io/docs/InitialSwitchConfiguration.docx">by clicking here.</a> The layout looks a little nicer in the Word Doc.</p>
+
+<h2>Steps:</h2>
+
+<p><li>Configure Hostname – This is essentially the router’s name. It’s really easy to set.</li></p>
+
+<pre><code class="language-Switch&gt;en">Switch#conf t
+Switch(config)#hostname Switch1 (or whatever you want it to be)
+Switch1(config)#
+</code></pre>
+
+<p><li>Disable name resolution – This happens when you type in something wrong on accident and the router/switch thinks that you want to resolve that name to an ip address</li></p>
+
+<pre><code>Switch1(config)#no ip domain-lookup
+</code></pre>
+
+<p><li>Configure management IP address (to something like 192.168.0.100 with a subnet mask)</li></p>
+
+<pre><code>Switch1(config)# int vlan1
+</code></pre>
+
+<p>Keep in mind that this is not a physical interface, it’s a logical interface. By default, on all new switches, Cisco throws every physical interface (i.e. fa0/1, fa0/2, etc) into vlan1. You can see which interfaces are assigned to which vlan by typing “show vlan brief”</p>
+
+<pre><code>Switch1(config-if)#ip address 192.168.0.100 255.255.255.0
+Switch1(config-if)#no shut
+</code></pre>
+
+<p><li>Configure default gateway – The default gateway is your ip address of the router</li></p>
+
+<pre><code>Switch1(config)#ip default-gateway 192.168.0.1
+</code></pre>
+
+<p><li>Configure a local username and password</li></p>
+
+<pre><code>Switch1(config)# username &lt;username&gt; password &lt;password&gt;
+(so for example) Switch1(config)# username TestAdmin password cisco
+</code></pre>
+
+<p><li>Configure enable password</li></p>
+
+<pre><code>Switch1&gt;en
+Switch1#conf t
+Switch1(config)#enable password &lt;password&gt;
+</code></pre>
+
+<p>You can verify this worked by exiting all the way out and then at the “Switch1&gt;” prompt, type <span class="smallcode">en</span>. If you’re prompted for a password, success!
+The problem with this is that if you do a <span class="smallcode">show running-config</span>, you’ll see this password listed in plain text. We’ll fix that in just a second.</p>
+
+<p><li>Configure secret password – this overrides the enable password that we just set</li></p>
+
+<pre><code>Switch1&gt;en
+Switch1#conf t
+Switch1(config)#enable secret &lt;secret password&gt;
+</code></pre>
+
+<p>If you log all the way out of everything and type <span class="smallcode">en</span> at “Switch1&gt;”, you’ll see that the original password you set (in the previous step) no longer works. The secret password overwrites that step and makes sure that the password doesn’t show in plain text.If you do a <span class="smallcode">show run</span>, you’ll now see two entries:
+1. enable secret 5 $1$qpye$.6foHFFgbCR3oB2dgqjn0 (or something similar)
+The ‘5’ means that it’s hashed using MD5 (which is bad in todays encryption world. This is outdated).
+2.enable password <password previously set>
+You’ll also see the username and password that we created previously in step 5 is listed plain text.</p>
+
+<p><li>Configure console password – makes sure that someone MUST authenticate when trying to console in using a rollover cable (a rollover cable is an RJ-45 to Serial connector). To use it with most computers nowadays, you usually have to have a Serial-to-USB adapter, seeing as most computers don’t have a serial port anymore.</li></p>
+
+<pre><code>Switch1&gt;en
+Switch1#conf t
+Switch1(config)#line con 0 (or just ‘con’ for short)
+Switch1(config-line)#password &lt;password&gt;
+Switch1(config-line)#login
+</code></pre>
+
+<p>This command is <strong>crucial</strong>. Without it, you won’t be able to log in over the console. Login forces the switch to use that password over the line.</p>
+
+<p><li>Configure synchronous logging on console – This prevents the switch from displaying informational messages that get in your way when you’re trying to type</li></p>
+
+<pre><code>Switch1(config)#line con 0
+Switch1(config-line)#logging synchronous
+</code></pre>
+
+<p><li>Configure an exec timeout of 10 minutes over console – This is a timeout. If there’s been no activity for X amount of minutes, you’ll get logged out. It’s just a basic security basic feature. You want this to be long enough that you don’t have to keep constantly logging in (like every minute or so), but you also don’t want it so long that someone could potentially hop on your computer if you step away for a minute.</li></p>
+
+<pre><code>Switch1(config-line)#exec-timeout &lt;minutes&gt;
+So, for example Switch1(config-line)#exec-timeout 10
+</code></pre>
+
+<p><li>Configure telnet access with a password – Each switch has a different number of simultaneous lines that it supports.</li>
+<li>To check to see how many lines your switch supports, you can type:</li></p>
+
+<pre><code>Switch1(config)#line vty ?
+</code></pre>
+
+<p>After doing this, you’ll see something like “(0-15) First Line number”. This tells you that you have 16 simultaneous telnet lines available</p>
+
+<pre><code>Switch1(config)#line vty 0 4
+</code></pre>
+
+<p>I’m only going to configure line 0 through 4, because I don’t need that many lines available. If you wanted, you could do <span class="smallcode">line vty 0 1</span> to only configure one line available</p>
+
+<pre><code>Switch1(config-line)#password &lt;password&gt;
+Switch1(config-line)#login
+</code></pre>
+
+<p>This is the same as the console login. You <strong>MUST</strong> type this.</p>
+
+<p><li>Configure synchronous logging over vty (telnet) lines</li></p>
+
+<pre><code>Switch1(config-line)#logging synchronous
+</code></pre>
+
+<p><li>Configure exec timeout of 5 minutes over vty (telnet) lines</li></p>
+
+<pre><code>Switch1(config-line)#exec-timeout 5
+</code></pre>
+
+<p>It’s probably a good idea to set this timeout to a lower time than your console line timeout, simply because it’s more likely that if you’re logging in remotely that someone could shoulder-surf or get on your computer than it is for someone to hijack a physical console-in session</p>
+
+<p><li>Configure vty (telnet) and console lines to use the local username and password</li>
+In step 10, we just typed <span class="smallcode">login</span> after we set the password. If you want, you can instead type <span class="smallcode">login local</span>. This will require a username and password (that we set in step 4) rather than just a password that we set on the line.</p>
+
+<p><li>Encrypt all current and future vty, console, and enable passwords</li>
+At this point, if you do a <span class="smallcode">show run</span>, you’ll find that all of our line passwords (console and vty) as well as our local user passwords are all listed in plain text. To encrypt these, type:</p>
+
+<pre><code>Switch1(config)#service password-encryption
+</code></pre>
+
+<p>This encrypts any current passwords we have, as well as any future passwords. Do a <span class="smallcode">show run</span> again to verify this</p>
+
+<p><li>Once you’ve done all this be SURE to save all of your changes. Do this by typing:</li></p>
+
+<pre><code>Switch1# copy running-config startup-config
+</code></pre>
+
+<p>A shorter way to do this is <span class="smallcode">copy run start</span>. If we don’t do this, when we restart our switch, all of our changes will be lost.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Cisco%20Switch%20Initial%20Configuration&url=http%3a%2f%2fbrycematheson.io%2fpost%2finitial-config-of-cisco-switch%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2finitial-config-of-cisco-switch%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2finitial-config-of-cisco-switch%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Test on Brycematheson.io</title>
+    <link>http://brycematheson.io/tags/test/index.xml</link>
+    <description>Recent content in Test on Brycematheson.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Brycematheson.io. All Rights Reserved.</copyright>
+    <atom:link href="http://brycematheson.io/tags/test/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Webscraping with Powershell</title>
+      <link>http://brycematheson.io/post/webscraping-with-powershell/</link>
+      <pubDate>Thu, 24 Nov 2016 12:26:23 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/webscraping-with-powershell/</guid>
+      <description>&lt;p&gt;Webscraping often becomes a touchy subject in regards to the legality of the whole thing. Obviously, stealing/scraping copyrighted content and claiming it as your own crosses those boundaries, but it can also provide some great benefits when done within legal limits.&lt;/p&gt;
+
+&lt;p&gt;A few months back, I was shopping for a new car and found myself checking Craigslist multiple times a day within a specific criteria. I got tired of filling out the &amp;ldquo;Filter&amp;rdquo; forms over and over again for specific data and then thought to myself, &amp;ldquo;I bet I could script this.&amp;rdquo; Where Craigslist is already public data anyway, and I was only scraping it for my own personal use, I felt it was fine.&lt;/p&gt;
+
+&lt;p&gt;First, I began by defining a few variables and creating a few arrays to hold my data. I then looped through the number of pages that I specified earlier, each time invoking a new web request and adding those results to my &lt;span class=&#34;smallcode&#34;&gt;$Pages&lt;/span&gt; array.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$MaxPages = 2
+$MinPrice = 2500
+$MaxPrice = 10000
+$Cars = @()
+$Pages = @()
+
+For ($CurrentPage=0; $CurrentPage -lt $MaxPages; $CurrentPage++) {
+    $WebPage = Invoke-WebRequest &amp;quot;http://eastidaho.craigslist.org/search/cta?hasPic=1&amp;amp;min_price=$MinPrice&amp;amp;max_price=$MaxPrice&amp;amp;s=$($CurrentPage * 100)&amp;quot;
+    $Pages += $WebPage.ParsedHtml.body.innerHTML
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now contained in my &lt;span class=&#34;smallcode&#34;&gt;$Pages&lt;/span&gt; array are two pages of results (although I could&amp;rsquo;ve told it to loop through any other number of pages that I wanted). Before we can extract any data from these pages, we need to &amp;ldquo;explode&amp;rdquo; them, or break them up into individual results. Using my browser, I inspected the code and found that each new car posting was broken up by a new &lt;span class=&#34;smallcode&#34;&gt;result-row&lt;/span&gt; CSS class.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/webscrape-with-powershell_2.jpg&#34; alt=&#34;Browser Property Inspector&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We then use this specific line of code to break up our long result set into individual pieces, and then store them into a new &lt;span class=&#34;smallcode&#34;&gt;$Results&lt;/span&gt; array.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$Results = $Pages -split &amp;quot;&amp;lt;li class=`&amp;quot;result-row`&amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, here comes the fun part. We loop through all of the items within that array. For each item in the array, we will run it through a set of regular expressions looking for individual pieces of data. If it finds a match, it will store it in a &lt;span class=&#34;smallcode&#34;&gt;$matches&lt;/span&gt; variable, which we can then assign to a custom powershell object.&lt;/p&gt;
+
+&lt;p&gt;In this case, I collected the Craigslist listing ID, description, price, and location for each car, but we could expand this to an infinite number of possibilites.&lt;/p&gt;
+
+&lt;p&gt;And then finally, once our custom object has been populated, we assign that to our &lt;span class=&#34;smallcode&#34;&gt;$Cars&lt;/span&gt; global array (that was declared outside of this loop, so we don&amp;rsquo;t destroy our results every time it&amp;rsquo;s run).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;ForEach ($Item in $Results) {
+
+	# search for a 10-digit number
+    if ($Item -match &#39;\d{10}&#39;) {
+        $ID = $matches[0]
+    }
+
+    # search for the text between two anchor tags, which contains a class of &#39;data-id&#39; and a 10-digit number
+    if ($Item -match &#39;data-id=&amp;quot;\d{10}\&amp;quot;&amp;gt;(.*?)&amp;lt;/a&amp;gt;&#39;) {
+        $Description = $matches[0]
+        $Description = ($Description -replace &amp;quot;.*`&amp;quot;&amp;gt;&amp;quot;, &amp;quot;&amp;quot;) -replace &amp;quot;&amp;lt;/a&amp;gt;&amp;quot;
+    }
+
+    # look for 3 to 6 digits that are preceded by a dollar sign
+    if ($Item -match &#39;\$\d{3,6}&#39;) {
+        $Price = $matches[0]
+    }
+
+    # look for a specific date-time format
+    if ($Item -match &#39;\d{4}\-\d{2}\-\d{2}\ \d{2}\:\d{2}&#39;) {
+        $DatePosted = $matches[0]
+    }
+
+    # look for a single word, wrapped in parentheses, then remove them
+    if ($Item -match &#39;\(\w+\)&#39;) {
+        $Location = $matches[0]
+        $Location = ($Location -replace &amp;quot;[()]&amp;quot;)
+    }
+    
+    # insert our stripped data into a custom powershell object
+    $ItemObject = New-Object -TypeName PSObject -Property @{
+        &#39;ID&#39; = $ID
+        &#39;Description&#39; = $Description
+        &#39;Price&#39; = $Price
+        &#39;DatePosted&#39; = $DatePosted
+        &#39;Location&#39; = $Location
+        
+    }
+    $Cars += $ItemObject
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once we&amp;rsquo;ve looped through all the results, we can display our results by simply calling our array. Because I&amp;rsquo;m picky, I wanted the data displayed in a specific order, which I explicitly specified.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$Cars | Format-Table ID,Description,Price,Location,DatePosted
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Running all of the above code, we get the following results:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/webscrape-with-powershell_1.jpg&#34; alt=&#34;Powershell Results&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Pretty cool, eh? Again, this can be modified to include any number of search criteria by modifying the query string in the first step and creating additional regular expressions.&lt;/p&gt;
+
+&lt;p&gt;And if all of that was too difficult to follow, here&amp;rsquo;s the complete code block:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$MaxPages = 2
+$MinPrice = 2500
+$MaxPrice = 10000
+$Cars = @()
+$Pages = @()
+
+For ($CurrentPage=0; $CurrentPage -lt $MaxPages; $CurrentPage++) {
+    $WebPage = Invoke-WebRequest &amp;quot;http://eastidaho.craigslist.org/search/cta?hasPic=1&amp;amp;min_price=$MinPrice&amp;amp;max_price=$MaxPrice&amp;amp;s=$($CurrentPage * 100)&amp;quot;
+    $Pages += $WebPage.ParsedHtml.body.innerHTML
+}
+
+$Results = $Pages -split &amp;quot;&amp;lt;li class=`&amp;quot;result-row`&amp;quot;&amp;quot;
+
+ForEach ($Item in $Results) {
+
+	# search for a 10-digit number
+    if ($Item -match &#39;\d{10}&#39;) {
+        $ID = $matches[0]
+    }
+
+    # search for the text between two anchor tags, which contains a class of &#39;data-id&#39; and a 10-digit number
+    if ($Item -match &#39;data-id=&amp;quot;\d{10}\&amp;quot;&amp;gt;(.*?)&amp;lt;/a&amp;gt;&#39;) {
+        $Description = $matches[0]
+        $Description = ($Description -replace &amp;quot;.*`&amp;quot;&amp;gt;&amp;quot;, &amp;quot;&amp;quot;) -replace &amp;quot;&amp;lt;/a&amp;gt;&amp;quot;
+    }
+
+    # look for 3 to 6 digits that are preceded by a dollar sign
+    if ($Item -match &#39;\$\d{3,6}&#39;) {
+        $Price = $matches[0]
+    }
+
+    # look for a specific date-time format
+    if ($Item -match &#39;\d{4}\-\d{2}\-\d{2}\ \d{2}\:\d{2}&#39;) {
+        $DatePosted = $matches[0]
+    }
+
+    # look for a single word, wrapped in parentheses, then remove them
+    if ($Item -match &#39;\(\w+\)&#39;) {
+        $Location = $matches[0]
+        $Location = ($Location -replace &amp;quot;[()]&amp;quot;)
+    }
+    
+    # insert our stripped data into a custom powershell object
+    $ItemObject = New-Object -TypeName PSObject -Property @{
+        &#39;ID&#39; = $ID
+        &#39;Description&#39; = $Description
+        &#39;Price&#39; = $Price
+        &#39;DatePosted&#39; = $DatePosted
+        &#39;Location&#39; = $Location
+        
+    }
+    $Cars += $ItemObject
+}
+
+$Cars | Format-Table ID,Description,Price,Location,DatePosted
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

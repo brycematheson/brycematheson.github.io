@@ -1,0 +1,1063 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Brycematheson.io</title>
+    <link>http://brycematheson.io/index.xml</link>
+    <description>Recent content on Brycematheson.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Brycematheson.io. All Rights Reserved.</copyright>
+    <lastBuildDate>Thu, 24 Nov 2016 12:26:23 -0700</lastBuildDate>
+    <atom:link href="http://brycematheson.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Webscraping with Powershell</title>
+      <link>http://brycematheson.io/post/webscraping-with-powershell/</link>
+      <pubDate>Thu, 24 Nov 2016 12:26:23 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/webscraping-with-powershell/</guid>
+      <description>&lt;p&gt;Webscraping often becomes a touchy subject in regards to the legality of the whole thing. Obviously, stealing/scraping copyrighted content and claiming it as your own crosses those boundaries, but it can also provide some great benefits when done within legal limits.&lt;/p&gt;
+
+&lt;p&gt;A few months back, I was shopping for a new car and found myself checking Craigslist multiple times a day within a specific criteria. I got tired of filling out the &amp;ldquo;Filter&amp;rdquo; forms over and over again for specific data and then thought to myself, &amp;ldquo;I bet I could script this.&amp;rdquo; Where Craigslist is already public data anyway, and I was only scraping it for my own personal use, I felt it was fine.&lt;/p&gt;
+
+&lt;p&gt;First, I began by defining a few variables and creating a few arrays to hold my data. I then looped through the number of pages that I specified earlier, each time invoking a new web request and adding those results to my &lt;span class=&#34;smallcode&#34;&gt;$Pages&lt;/span&gt; array.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$MaxPages = 2
+$MinPrice = 2500
+$MaxPrice = 10000
+$Cars = @()
+$Pages = @()
+
+For ($CurrentPage=0; $CurrentPage -lt $MaxPages; $CurrentPage++) {
+    $WebPage = Invoke-WebRequest &amp;quot;http://eastidaho.craigslist.org/search/cta?hasPic=1&amp;amp;min_price=$MinPrice&amp;amp;max_price=$MaxPrice&amp;amp;s=$($CurrentPage * 100)&amp;quot;
+    $Pages += $WebPage.ParsedHtml.body.innerHTML
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now contained in my &lt;span class=&#34;smallcode&#34;&gt;$Pages&lt;/span&gt; array are two pages of results (although I could&amp;rsquo;ve told it to loop through any other number of pages that I wanted). Before we can extract any data from these pages, we need to &amp;ldquo;explode&amp;rdquo; them, or break them up into individual results. Using my browser, I inspected the code and found that each new car posting was broken up by a new &lt;span class=&#34;smallcode&#34;&gt;result-row&lt;/span&gt; CSS class.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/webscrape-with-powershell_2.jpg&#34; alt=&#34;Browser Property Inspector&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We then use this specific line of code to break up our long result set into individual pieces, and then store them into a new &lt;span class=&#34;smallcode&#34;&gt;$Results&lt;/span&gt; array.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$Results = $Pages -split &amp;quot;&amp;lt;li class=`&amp;quot;result-row`&amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, here comes the fun part. We loop through all of the items within that array. For each item in the array, we will run it through a set of regular expressions looking for individual pieces of data. If it finds a match, it will store it in a &lt;span class=&#34;smallcode&#34;&gt;$matches&lt;/span&gt; variable, which we can then assign to a custom powershell object.&lt;/p&gt;
+
+&lt;p&gt;In this case, I collected the Craigslist listing ID, description, price, and location for each car, but we could expand this to an infinite number of possibilites.&lt;/p&gt;
+
+&lt;p&gt;And then finally, once our custom object has been populated, we assign that to our &lt;span class=&#34;smallcode&#34;&gt;$Cars&lt;/span&gt; global array (that was declared outside of this loop, so we don&amp;rsquo;t destroy our results every time it&amp;rsquo;s run).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;ForEach ($Item in $Results) {
+
+	# search for a 10-digit number
+    if ($Item -match &#39;\d{10}&#39;) {
+        $ID = $matches[0]
+    }
+
+    # search for the text between two anchor tags, which contains a class of &#39;data-id&#39; and a 10-digit number
+    if ($Item -match &#39;data-id=&amp;quot;\d{10}\&amp;quot;&amp;gt;(.*?)&amp;lt;/a&amp;gt;&#39;) {
+        $Description = $matches[0]
+        $Description = ($Description -replace &amp;quot;.*`&amp;quot;&amp;gt;&amp;quot;, &amp;quot;&amp;quot;) -replace &amp;quot;&amp;lt;/a&amp;gt;&amp;quot;
+    }
+
+    # look for 3 to 6 digits that are preceded by a dollar sign
+    if ($Item -match &#39;\$\d{3,6}&#39;) {
+        $Price = $matches[0]
+    }
+
+    # look for a specific date-time format
+    if ($Item -match &#39;\d{4}\-\d{2}\-\d{2}\ \d{2}\:\d{2}&#39;) {
+        $DatePosted = $matches[0]
+    }
+
+    # look for a single word, wrapped in parentheses, then remove them
+    if ($Item -match &#39;\(\w+\)&#39;) {
+        $Location = $matches[0]
+        $Location = ($Location -replace &amp;quot;[()]&amp;quot;)
+    }
+    
+    # insert our stripped data into a custom powershell object
+    $ItemObject = New-Object -TypeName PSObject -Property @{
+        &#39;ID&#39; = $ID
+        &#39;Description&#39; = $Description
+        &#39;Price&#39; = $Price
+        &#39;DatePosted&#39; = $DatePosted
+        &#39;Location&#39; = $Location
+        
+    }
+    $Cars += $ItemObject
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Once we&amp;rsquo;ve looped through all the results, we can display our results by simply calling our array. Because I&amp;rsquo;m picky, I wanted the data displayed in a specific order, which I explicitly specified.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$Cars | Format-Table ID,Description,Price,Location,DatePosted
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Running all of the above code, we get the following results:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/webscrape-with-powershell_1.jpg&#34; alt=&#34;Powershell Results&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Pretty cool, eh? Again, this can be modified to include any number of search criteria by modifying the query string in the first step and creating additional regular expressions.&lt;/p&gt;
+
+&lt;p&gt;And if all of that was too difficult to follow, here&amp;rsquo;s the complete code block:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$MaxPages = 2
+$MinPrice = 2500
+$MaxPrice = 10000
+$Cars = @()
+$Pages = @()
+
+For ($CurrentPage=0; $CurrentPage -lt $MaxPages; $CurrentPage++) {
+    $WebPage = Invoke-WebRequest &amp;quot;http://eastidaho.craigslist.org/search/cta?hasPic=1&amp;amp;min_price=$MinPrice&amp;amp;max_price=$MaxPrice&amp;amp;s=$($CurrentPage * 100)&amp;quot;
+    $Pages += $WebPage.ParsedHtml.body.innerHTML
+}
+
+$Results = $Pages -split &amp;quot;&amp;lt;li class=`&amp;quot;result-row`&amp;quot;&amp;quot;
+
+ForEach ($Item in $Results) {
+
+	# search for a 10-digit number
+    if ($Item -match &#39;\d{10}&#39;) {
+        $ID = $matches[0]
+    }
+
+    # search for the text between two anchor tags, which contains a class of &#39;data-id&#39; and a 10-digit number
+    if ($Item -match &#39;data-id=&amp;quot;\d{10}\&amp;quot;&amp;gt;(.*?)&amp;lt;/a&amp;gt;&#39;) {
+        $Description = $matches[0]
+        $Description = ($Description -replace &amp;quot;.*`&amp;quot;&amp;gt;&amp;quot;, &amp;quot;&amp;quot;) -replace &amp;quot;&amp;lt;/a&amp;gt;&amp;quot;
+    }
+
+    # look for 3 to 6 digits that are preceded by a dollar sign
+    if ($Item -match &#39;\$\d{3,6}&#39;) {
+        $Price = $matches[0]
+    }
+
+    # look for a specific date-time format
+    if ($Item -match &#39;\d{4}\-\d{2}\-\d{2}\ \d{2}\:\d{2}&#39;) {
+        $DatePosted = $matches[0]
+    }
+
+    # look for a single word, wrapped in parentheses, then remove them
+    if ($Item -match &#39;\(\w+\)&#39;) {
+        $Location = $matches[0]
+        $Location = ($Location -replace &amp;quot;[()]&amp;quot;)
+    }
+    
+    # insert our stripped data into a custom powershell object
+    $ItemObject = New-Object -TypeName PSObject -Property @{
+        &#39;ID&#39; = $ID
+        &#39;Description&#39; = $Description
+        &#39;Price&#39; = $Price
+        &#39;DatePosted&#39; = $DatePosted
+        &#39;Location&#39; = $Location
+        
+    }
+    $Cars += $ItemObject
+}
+
+$Cars | Format-Table ID,Description,Price,Location,DatePosted
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Do...until Process Killed -- Powershell</title>
+      <link>http://brycematheson.io/post/do-until-process-killed/</link>
+      <pubDate>Tue, 08 Nov 2016 21:17:59 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/do-until-process-killed/</guid>
+      <description>&lt;p&gt;I really enjoy using powershell to automate processes. One thing I repeatedly find myself doing is wanting to run (or not run) a specific piece of code until a program or service has terminated. This little snippet is extremely simple, but does the job. If a given process is detected, it will continue to loop through the inner code until the &amp;ldquo;Until&amp;rdquo; section evaluates to true.&lt;/p&gt;
+
+&lt;p&gt;More often than not, I find myself checking to see if &amp;ldquo;msiexec&amp;rdquo; or another installer is running. If it is, continue, otherwise keep looping.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$ProcessList = @(
+    &amp;quot;notepad&amp;quot; #or whatever you want to monitor
+)
+
+Do {
+    $ProcessesFound = Get-Process | ? {$ProcessList -contains $_.Name} | Select-Object -ExpandProperty Name
+    If ($ProcessesFound) {
+        Write-Host &amp;quot;Still running: $($ProcessesFound)&amp;quot;
+        Start-Sleep 10
+    }
+} Until (!$ProcessesFound)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The great part about this, is you can also add the &lt;span class=&#34;smallcode&#34;&gt;-Computer&lt;/span&gt; parameter to the &lt;span class=&#34;smallcode&#34;&gt;Get-Process&lt;/span&gt; command to run it on a remote system.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;$ProcessList = @(
+    &amp;quot;notepad&amp;quot; #or whatever you want to monitor
+)
+
+Do {
+    $ProcessesFound = Get-Process -Computer $pcname | ? {$ProcessList -contains $_.Name} | Select-Object -ExpandProperty Name
+    If ($ProcessesFound) {
+        Write-Host &amp;quot;Still running: $($ProcessesFound)&amp;quot;
+        Start-Sleep 10
+    }
+} Until (!$ProcessesFound)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;An even easier way&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t need to loop through any code during the waiting period, you can simply run this one-liner.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-powershell&#34;&gt;Get-Process -Name notepad,msiexec -ErrorAction SilentlyContinue | Wait-Process
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Again, small and simple, but something I use all the time.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Launch Sublime Text from Mac Terminal</title>
+      <link>http://brycematheson.io/post/launch-sublime-text-from-terminal/</link>
+      <pubDate>Sun, 23 Oct 2016 20:37:32 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/launch-sublime-text-from-terminal/</guid>
+      <description>&lt;p&gt;Often times, I find myself navigating through folder structures via the terminal, and need to browse to that specific location via text editor. Sure, there are options like vi, but I prefer the GUI. In the past, I would have to open up the Sublime Text app (my editor of choice), then go &amp;ldquo;File&amp;rdquo; &amp;ndash;&amp;gt; &amp;ldquo;Open&amp;rdquo;, and browse to that location all over again. It&amp;rsquo;s trivial, but it&amp;rsquo;s a hassle at times and wish I could just open it directly from the terminal.&lt;/p&gt;
+
+&lt;p&gt;I use this trick all the time. First, copy and paste the below code in to your terminal:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;ln -s /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl /usr/local/bin/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This creates a permanent symbolic link between the Sublime Text app in your Applications folder, and the &lt;span class=&#34;smallcode&#34;&gt;subl&lt;/span&gt; command.&lt;/p&gt;
+
+&lt;p&gt;Now, as you navigate the command line, you can open your current directory in Sublime Text by typing:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;subl .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Voila!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Troubleshooting the MySQL Event Scheduler</title>
+      <link>http://brycematheson.io/post/mysql-event-scheduler-not-working/</link>
+      <pubDate>Sat, 22 Oct 2016 10:30:59 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/mysql-event-scheduler-not-working/</guid>
+      <description>&lt;p&gt;I ran into a rather frustrating issue the past few days regarding the MySQL Event Scheduler that had me pulling my hair out. I spent hours upon hours trying to diagnose problems as to why I 1) couldn&amp;rsquo;t create events in the first place, and 2) once I could create them, why they wouldn&amp;rsquo;t run. To hopefully save you my headache, here&amp;rsquo;s the solution:&lt;/p&gt;
+
+&lt;h2&gt;Can&#39;t Create Events&lt;/h2&gt;
+
+&lt;p&gt;In order for events to run via the MySQL Scheduler, the scheduler itself has to be enabled. It&amp;rsquo;s a service that&amp;rsquo;s not enabled by default. There are a few ways to do this. One, you can go into PhpMyAdmin (if you use this), select &amp;ldquo;Events&amp;rdquo;, and then select &amp;ldquo;On&amp;rdquo; under &amp;ldquo;Event Scheduler Status&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/mysql-event-scheduler-not-working_1.jpg&#34; alt=&#34;PhpMyAdmin Enable&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, this works great momentarily, until either you restart the MySQL service or restart your web server. Upon restart, this slider will switch back to &amp;ldquo;Off&amp;rdquo;. To enable it permanently, navigate to:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;/etc/mysql/mysql.conf.d
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then, edit the &lt;span class=&#34;smallcode&#34;&gt;mysqld.cnf&lt;/span&gt; file. Somewhere underneath the &lt;span class=&#34;smallcode&#34;&gt;[mysqld]&lt;/span&gt; header, add the following line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;event_scheduler = on
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;[mysqld]
+#
+# * Basic Settings
+#
+user		= mysql
+pid-file	= /var/run/mysqld/mysqld.pid
+socket		= /var/run/mysqld/mysqld.sock
+port		= 3306
+basedir		= /usr
+datadir		= /var/lib/mysql
+tmpdir		= /tmp
+lc-messages-dir	= /usr/share/mysql
+skip-external-locking
+event_scheduler = on
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Be sure to restart the mysql service, and you should be in business. Now, check back on PhpMyAdmin and your Event Scheduler Status should be set to &amp;ldquo;On&amp;rdquo;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo service mysql restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;Correct Syntax&lt;/h2&gt;
+
+&lt;p&gt;I had problems with syntax for a while there, too. Everytime I attempted to create an event, either via the PhpMyAdmin GUI, or straight from the command line, I would get syntax errors. Most people probably need to have recurring events, but I only wanted to schedule one-time changes. This was the syntax that finally worked for me:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;CREATE EVENT Test1
+ON SCHEDULE AT &#39;2016-10-22 10:30:00&#39;
+ON COMPLETION NOT PRESERVE ENABLE
+DO UPDATE users SET isFeatured = 1 WHERE id = 117;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Most of the above is fairly self-explanatory, but this will create a scheduled event that will run just once at 10:30am on 10/22/2016. When the event has fired off and is done, it will not preserve the event (meaning, it&amp;rsquo;ll be deleted), and the event is currently &amp;ldquo;Enabled&amp;rdquo; to run once it hits this date and time. Then, the last line, beginning with &amp;ldquo;DO&amp;rdquo; will run your desired code.&lt;/p&gt;
+
+&lt;h2&gt;Created events either don&#39;t show, or have &#34;disabled&#34; as the status&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/mysql-event-scheduler-not-working_2.jpg&#34; alt=&#34;MySQL Events disabled&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This was the one that REALLY got me. I was so frustrated as to why my events would either not show up at all under the &amp;ldquo;Events&amp;rdquo; tab in PhpMyAdmin, or if they would show up, they would be set to &amp;ldquo;DISABLED&amp;rdquo;, even though I explicity marked them as enabled.&lt;/p&gt;
+
+&lt;p&gt;In our above SQL syntax, I found that if I would change&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;ON COMPLETION NOT PRESERVE ENABLE
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;ON COMPLETION PRESERVE ENABLE
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;my event would at least show up (which is a start), but no matter what I tried, it would never say &amp;ldquo;ENABLED&amp;rdquo;. Then, I stumbled across &lt;a href=&#34;https://dev.mysql.com/doc/refman/5.6/en/create-event.html&#34; target=&#34;_blank&#34;&gt;this beautiful piece of information in the MySQL documentation&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;AT &lt;b&gt;timestamp&lt;/b&gt; is used for a one-time event. It specifies that the event executes one time only at the date and time given by &lt;b&gt;timestamp&lt;/b&gt;, which must include both the date and time, or must be an expression that resolves to a datetime value. You may use a value of either the &lt;b&gt;DATETIME&lt;/b&gt; or &lt;b&gt;TIMESTAMP&lt;/b&gt; type for this purpose. If the date is in the past, a warning occurs.&lt;/blockquote&gt;
+
+&lt;p&gt;Which made me wonder, &amp;ldquo;Am I getting any errors?&amp;rdquo; Sure enough, &lt;span class=&#34;smallcode&#34;&gt;SHOW WARNINGS\G&lt;/span&gt; showed me this error:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;mysql&amp;gt; SHOW WARNINGS\G
+*************************** 1. row ***************************
+  Level: Note
+   Code: 1588
+Message: Event execution time is in the past and ON COMPLETION NOT
+         PRESERVE is set. The event was dropped immediately after
+         creation.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I then thought, &amp;ldquo;But wait, I always set my events to be scheduled in the future. How could it be in the past?&amp;rdquo; This error message explains why our message is both not appearing (because it&amp;rsquo;s being dropped immediately after creation), and why our event is not firing if it DOES show up. My time was set wrong.&lt;/p&gt;
+
+&lt;h2&gt;Change Time Zone&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;mysql&amp;gt; SELECT NOW();
++---------------------+
+| NOW()               |
++---------------------+
+| 2016-10-22 16:59:35 |
++---------------------+
+1 row in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Even though it was only 10:30am my time, my events were being scheduled to fire 6 hours in the past, meaning they would just be dropped and/or disabled.&lt;/p&gt;
+
+&lt;p&gt;Head back on over to the &lt;span class=&#34;smallcode&#34;&gt;mysqld.cnf&lt;/span&gt; file, edit it, and then add the following line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;default-time-zone=&#39;-6:00&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Because I&amp;rsquo;m Mountain Time, I use -6:00 for my UTC timestamp, but you&amp;rsquo;ll obviously need to edit that accordingly. A list of possible values can be found &lt;a href=&#34;http://dev.mysql.com/doc/refman/5.7/en/time-zone-support.html&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://en.wikipedia.org/wiki/List_of_UTC_time_offsets&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;. After saving and closing out that file, run a simple&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;sudo service mysql restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and we&amp;rsquo;ll be back in business. Now, log back into your MySQL instance and run a &lt;span class=&#34;smallcode&#34;&gt;SELECT NOW();&lt;/span&gt; and you should be showing the correct time:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sql&#34;&gt;mysql&amp;gt; SELECT NOW();
++---------------------+
+| NOW()               |
++---------------------+
+| 2016-10-22 11:02:16 |
++---------------------+
+1 row in set (0.00 sec)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Creating events should now be a piece of cake. With the MySQL instance now having the correct time, events should work as expected as long as they&amp;rsquo;re scheduled in the future.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Auto Sync Local Changes to Remote Using rsync</title>
+      <link>http://brycematheson.io/post/auto-sync-local-remote-rsync/</link>
+      <pubDate>Thu, 06 Oct 2016 19:59:23 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/auto-sync-local-remote-rsync/</guid>
+      <description>&lt;p&gt;Whenever I&amp;rsquo;m working on a new site, it&amp;rsquo;s so incredibly tedious to change a few files, manually upload your changes via SFTP/SSH (if you&amp;rsquo;re still using FTP, shame on you), reload your browser, check those changes, and repeat another 150+ times until you finally get it right.&lt;/p&gt;
+
+&lt;p&gt;For a while, I had a fairly good system where I would use &lt;a href=&#34;https://winscp.net/eng/download.php&#34; target=&#34;_blank&#34;&gt;WinSCP&lt;/a&gt; to auto-sync my changes to my production box using their &amp;ldquo;Keep Synchronized&amp;rdquo; feature. The problem is that WinSCP is only for Windows, not OS X. As a workaround, I installed WinSCP on a Windows VM, made my Mac filesystem visible to the VM, and would have WinSCP reflect those edits while I made code changes in Sublime on the Mac side.&lt;/p&gt;
+
+&lt;p&gt;Obviously this isn&amp;rsquo;t a great solution, but it did the job. I soon got tired of having to spin up the VM everytime I wanted to work on a project, and I found myself eating through battery more quickly running two operating systems at once (making working remotely difficult, because I never have a charger).&lt;/p&gt;
+
+&lt;p&gt;I searched around for a native OS X solution that would do a better job. There isn&amp;rsquo;t. At least, not something that does it well. And not for free. I&amp;rsquo;m a cheapskate.&lt;/p&gt;
+
+&lt;p&gt;Through some digging, I discovered a command line solution. It&amp;rsquo;s a combination of rsync and fswatch. More or less, this is how I&amp;rsquo;ve implemented it:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/alandipert/fswatch&#34; target=&#34;_blank&#34;&gt;fswatch&lt;/a&gt; is a great little tool that uses the Mac OS X FSEvents API to monitor a directory for changes. When a change event about any file or directory is received, a user-specified bash script is executed. I use fswatch to watch changes on my local project directory, and then invoke a bash script whenever a change event is received. A &amp;ldquo;change&amp;rdquo; includes file/directory creations, edits, and deletes. The bash script then calls rsync to push the changes.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re not familiar with &lt;a href=&#34;https://rsync.samba.org/&#34; target=&#34;_blank&#34;&gt;rsync&lt;/a&gt;, you should be. It works similarly to robocopy or xcopy, but minimizes the amount of data sent over the line by doing small, differential changes. It copies files via SSH.&lt;/p&gt;
+
+&lt;p&gt;Most will already have rsync installed by default on their computer, but fswatch won&amp;rsquo;t be. You can either compile and install the source from scratch, or just grab it via Homebrew or MacPorts:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# MacPorts
+$ port install fswatch
+
+# Homebrew
+$ brew install fswatch
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, we can combine both utilities like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;fswatch -o /Users/brycematheson/Sites | xargs -n1 -I{} ./sync.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For now, you can ignore the &lt;span class=&#34;smallcode&#34;&gt;xargs -n1 -I{}&lt;/span&gt; part. Just know that it works. What we really want to pay attention to is the &lt;span class=&#34;smallcode&#34;&gt;fswatch -o /Users/brycematheson/Sites&lt;/span&gt; part. We&amp;rsquo;re telling fswatch to keep an eye on the &amp;ldquo;Sites&amp;rdquo; directory, and then run the &amp;ldquo;sync.sh&amp;rdquo; bash script, whenever a change is detected. &amp;ldquo;sync.sh&amp;rdquo; looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;rsync -r -a -v -e &amp;quot;ssh -l root&amp;quot; --exclude &amp;quot;/phpmyadmin&amp;quot; --exclude &amp;quot;/images&amp;quot; /Users/brycematheson/Sites/mysite/ 124.18.106.212:/var/www/public_html
+afplay &amp;quot;/System/Library/Sounds/Blow.aiff&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The command above will copy the source directory of &amp;ldquo;/Users/brycematheson/Sites/mysite/&amp;rdquo; to &amp;ldquo;/var/www/public_html&amp;rdquo;, excluding the &amp;ldquo;phpmyadmin&amp;rdquo; and &amp;ldquo;images&amp;rdquo; folders. It will also log in via the username &amp;ldquo;root&amp;rdquo; at the IP address of 124.18.106.212. &lt;b&gt;Note that the source directory ends in a slash, but the destination directory does not&lt;/b&gt;. This is crucial, otherwise rsync will give you fits.&lt;/p&gt;
+
+&lt;p&gt;I would highly recommend &lt;a href=&#34;https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2&#34; target=&#34;_blank&#34;&gt;setting up private/public SSH keys&lt;/a&gt; allowing you to use rsync without having to enter in a password each time.&lt;/p&gt;
+
+&lt;p&gt;Each time rsync successfully copies files to your destination, you&amp;rsquo;ll be greeted with a short sound, just making it easier to audibly know that a change has happened.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s it! Happy coding with auto-sync.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Image Building Checklist</title>
+      <link>http://brycematheson.io/post/image-building-checklist/</link>
+      <pubDate>Thu, 22 Sep 2016 17:47:11 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/image-building-checklist/</guid>
+      <description>&lt;p&gt;With the recent release of Windows 10 Anniversary addition, I was tasked with creating a new desktop image to deployed on any newly-purchased computers. While this is a fairly straightforward task, I know that I always forget to include something in the image. It&#39;s generally something trivial, but it&#39;s annoying. It requires that you I back and make the change in the VM, re-capture the image, and then deploy again. Ultimately, I&#39;m lazy, meaning those steps never actually happen and I just make do until it comes time to build another new image.&lt;/p&gt;
+
+&lt;p&gt;With this latest image, I wanted to make absolutely certain that I wouldn&#39;t forget even the smallest of details. Searching through Google for a &#34;Image Building Checklist&#34; came up empty, so I decided to create my own. Granted, everyone&#39;s environment is different, but for a SMB (like I work for), this list should be somewhat comprehensive.&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Manage Optional Features (uninstall handwriting, etc)&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;Settings &amp;gt; System &amp;gt; Apps &amp;amp; Features &amp;gt; Manage Optional Features&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;Disable Windows Store&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;Gpedit.msc&lt;/li&gt;
+    &lt;li&gt;Computer Config &amp;gt; Windows Settings &amp;gt; Security Settings &amp;gt; Software Restriction Policies&lt;/li&gt;
+    &lt;li&gt;Right-click and select &amp;ldquo;New&amp;rdquo;&lt;/li&gt;
+    &lt;li&gt;Additional Rules &amp;gt; Right-click &amp;ldquo;New Path Rule&amp;rdquo;&lt;/li&gt;
+    &lt;li&gt;%programfiles%\WindowsApps\Microsoft.WindowsStore*&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;Set time &amp;amp; timezone&lt;/li&gt;
+&lt;li&gt;Modify Start Menu&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;powershell&lt;/li&gt;
+    &lt;li&gt;Export-StartLayout -Path &amp;lsquo;C:\users\All Users\Desktop\customlayout.xml&amp;rsquo; -verbose&lt;/li&gt;
+    &lt;li&gt;Import-StartLayout -LayoutPath &amp;lsquo;C:\users\All Users\Desktop\customlayout.xml&amp;rsquo;-MountPath c:\ -verbose&lt;/li&gt;
+    &lt;li&gt;del &amp;lsquo;C:\users\All Users\Desktop\customlayout.xml&amp;rsquo; -verbose&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;Turn on system restore&lt;/li&gt;
+&lt;li&gt;Open file explorer to &amp;lsquo;This PC&amp;rsquo;&lt;/li&gt;
+&lt;li&gt;Install .NET Framework 3.5&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;Mount Windows 10 Disc&lt;/li&gt;
+    &lt;li&gt;Dism /online /enable-feature /featurename:NetFx3 /All /Source:D:\sources\sxs /LimitAccess&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;Enable Remote Desktop&lt;/li&gt;
+&lt;li&gt;Be sure to move the new computers to correct OU.&lt;/li&gt;
+&lt;li&gt;Remove SkyDrive (OneDrive) from Office (if installed).&lt;/li&gt;
+&lt;li&gt;Run Windows 10 Decrapify script&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;https://community.spiceworks.com/scripts/show/3298-windows-10-decrapifier&#34;&gt;https://community.spiceworks.com/scripts/show/3298-windows-10-decrapifier&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;Install Software&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;Java&lt;/li&gt;
+    &lt;li&gt;Anti-Virus/Anti-Malware (I like Sophos and Malware Bytes)&lt;/li&gt;
+    &lt;li&gt;Chrome&lt;/li&gt;
+    &lt;li&gt;7-Zip&lt;/li&gt;
+    &lt;li&gt;CutePDF&lt;/li&gt;
+    &lt;li&gt;Adobe Photoshop, Lightroom, etc.&lt;/li&gt;
+    &lt;li&gt;Microsoft Office&lt;/li&gt;
+    &lt;li&gt;VMWare Fusion&lt;/li&gt;
+    &lt;li&gt;etc.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;Have all members of the IT department log in (to create profiles &amp;ndash; saving time on profile generation)&lt;/li&gt;
+&lt;li&gt;Create default users desktop (Add &amp;lsquo;This PC&amp;rsquo; icon, Internet Explorer, other custom adjustments)&lt;/li&gt;
+&lt;li&gt;Remove Microsoft Edge from Taskbar&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;http://ccmexec.com/2015/12/customizing-the-taskbar-in-windows-10-during-osd/&#34;&gt;http://ccmexec.com/2015/12/customizing-the-taskbar-in-windows-10-during-osd/&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;http://ccmexec.com/2015/12/removing-the-edge-icon-from-the-taskbar-during-osd/&#34;&gt;http://ccmexec.com/2015/12/removing-the-edge-icon-from-the-taskbar-during-osd/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;li&gt;Set default file associations&lt;/li&gt;
+&lt;ul&gt;
+    &lt;li&gt;Export before Sysprep&lt;/li&gt;
+    &lt;ul&gt;
+        &lt;li&gt;dism /online /Export-DefaultAppAssociations:C:\associations.xml&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;li&gt;Import after Sysprep&lt;/li&gt;
+    &lt;ul&gt;
+        &lt;li&gt;dism /online /Import-DefaultAppAssociations:C:\assocations.xml&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/ul&gt;
+&lt;li&gt;Add/Remove features (remove Media Player, enable SMTP, etc.)
+&lt;li&gt;Disable Local Administrator account (Disabled by default, but double-check anyway)
+&lt;li&gt;Set up proper User &amp;amp; Admin Groups (GPOs may already do this)&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Build a Breakfast Nook</title>
+      <link>http://brycematheson.io/post/how-to-build-a-breakfast-nook/</link>
+      <pubDate>Mon, 04 Jul 2016 13:12:24 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/how-to-build-a-breakfast-nook/</guid>
+      <description>&lt;p&gt;Happy 4th.&lt;/p&gt;
+
+&lt;p&gt;I bought a house last month. This was on the list of one of the first major projects I wanted to get done after moving in. As I was walking through the house before buying it, I saw this kitchen corner and instantly invisioned a breakfast nook.&lt;/p&gt;
+
+&lt;p&gt;This picture below shows the previous owners&amp;rsquo; setup. Besides not liking the table itself, it was too big. In this picture, you can see that it&amp;rsquo;s pushed all the way into the corner. The back chair was completely smashed against the wall. Whenever they wanted to sit down to dinner as a family, they would have to pull the table out from the corner. After doing that, it would block the walkway out of the kitchen and down the hallway. So, I set out to fix that.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_before.jpg&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After moving in and painting the place (you can see the missing lightswitch covers), this is what the space looked like empty.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_1.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I ran to the hardware store and bought twelve 2x4&amp;rsquo;s. First, I measured out the size that I wanted and marked it using masking tape on the floor. I then set out building the base. The larger rectangle measured 78.75&amp;rdquo;x18&amp;rdquo;. And the smaller rectangle measured 38.75&amp;rdquo;x18&amp;rdquo;. You might ask why I cut the boards to such a weird lengths (78.85&amp;rdquo; and 38.75&amp;rdquo;). This shorter length accounts for &lt;sup&gt;3&lt;/sup&gt;&amp;frasl;&lt;sub&gt;4&lt;/sub&gt;&amp;rdquo; of the MDF that will be the face of the box, as well as &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt;&amp;rdquo; for the trim. That puts the overall length to 80&amp;rdquo; for the larger, and 40&amp;rdquo; for the smaller.&lt;/p&gt;
+
+&lt;p&gt;Although I could have just used regular wood screws to tie the boards together, especially because the screw holes would have been covered by the MDF, I invested in a Kreg jig for the joints. This, honestly, is the best $40 I have ever spent. That might sound ridiculous, but I mean it. The four boards remained tight and strong. I wanted really strong joints.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_2.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I then set out to start building up the rest of the box.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_3.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s one box completed. I continued to use a Kreg jig for the joints. As you can tell, this is how I managed to deal with the outlet. I made sure to notch out a section so that those outlets can still be used once the box is built.&lt;/p&gt;
+
+&lt;p&gt;Looking online, I saw a lot of people making certain cutouts or ducts for the heating register. I didn&amp;rsquo;t like the look of that, so I just built around it.&lt;/p&gt;
+
+&lt;p&gt;You can also see the cross members that I added, mounted on top of a 2x4 vertically for extra support once the tops of the benches are added.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_4.JPG&#34; /&gt;
+&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_5.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s both boxes fully framed and completed.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_6.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I then headed back to the hardware store and bought two sheets of 4&amp;rsquo;x8&amp;rsquo; &lt;sup&gt;3&lt;/sup&gt;&amp;frasl;&lt;sub&gt;4&lt;/sub&gt;&amp;rdquo; MDF. I chose this over plywood, as I wanted to have a smooth finish rather than the grain of the wood showing through. It was roughly $30/sheet. Your hardware store can also rip the sheets of wood to your specific size.&lt;/p&gt;
+
+&lt;p&gt;My hardware store&amp;rsquo;s saw was actually out of order at the time, so I wasn&amp;rsquo;t able to have them cut it for me. I brought it home, snapped a chalk line, and then just used my circular saw to rip the sheets.&lt;/p&gt;
+
+&lt;p&gt;I then cut them to smaller sizes as needed and nailed them to the frame using a finishing nailer.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_7.JPG&#34; /&gt;
+&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_8.JPG&#34; /&gt;
+&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_9.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s the box with all of the MDF nailed to the frame. At this point, there are a few gaps and things. I wasn&amp;rsquo;t too worried about them, as most of these will be covered by the trim.&lt;/p&gt;
+
+&lt;p&gt;You can see a coping saw on top of the box in this photo. I used the saw to notch out a piece of the MDF that fits around the edge of the baseboard. I&amp;rsquo;ve seen a few people rip out the baseboards so that the benches fit flush against the wall, but I decided to leave mine just in case the next owners of the home want to remove the benches, the baseboard will still be intact.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_10.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, I started nailing on the trim. I used 3-&lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;4&lt;/sub&gt;&amp;rdquo; baseboard trim around the entire box. I used the same finish nailer to nail the trim to the face of the MDF.&lt;/p&gt;
+
+&lt;p&gt;If I could do it over again, I would have used the miter saw to make 45-degree angles on the corners of the trim rather than butting the boards up together. Once the boards were painted, it didn&amp;rsquo;t look quite so obvious on the corners, but I think it would have made them just a hint nicer.&lt;/p&gt;
+
+&lt;p&gt;You can&amp;rsquo;t tell, because I didn&amp;rsquo;t do the best job with taking close-ups, but I nailed the top pieces of trim just slightly higher than the MDF. I left it so that it sticks up &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt;&amp;rdquo; above the MDF, because I plan to place cushions on top eventually, and this small lip will prevent the cushions from sliding off the top of the box as people get up and down and slide on the cushions.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_11.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s all the trim completed. If you notice against the wall, there&amp;rsquo;s a long piece of small trim covering the gap between the wall and the box. I thought this would be a nice touch, but ultimately, I decided against it. I figured the cushions will cover this gap eventually, so it won&amp;rsquo;t matter.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_12.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, get to painting. I primed and then painted all the visible pieces of wood.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_13.JPG&#34; /&gt;
+&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_14.JPG&#34; /&gt;
+&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_15.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And here&amp;rsquo;s the finished product. I drilled two 1-inch holes into the top of each board so they can easily be lifted off the top of the box.&lt;/p&gt;
+
+&lt;p&gt;Currently, the boxes haven&amp;rsquo;t needed to be screwed together or screwed into the wall. As people have sat on them, they haven&amp;rsquo;t shifted at all.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_16.JPG&#34; /&gt;
+&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_17.JPG&#34; /&gt;
+&lt;img src=&#34;http://brycematheson.io/img/post_images/breakfastnook_18.JPG&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it! Overall, it was a surprisingly simple project, and I was really happy with how they turned out. I made the benches 18&amp;rdquo; high and 18&amp;rdquo; deep. I wasn&amp;rsquo;t keeping super close track of all the expenses, but I think I spent roughly $300 on wood, trim, primer, paint, screws, the kreg jig, etc.&lt;/p&gt;
+
+&lt;p&gt;Let me know if you want any other specifics or details.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Why I Haven&#39;t Fixed Your Issue</title>
+      <link>http://brycematheson.io/post/why-i-havent-fixed-your-issue/</link>
+      <pubDate>Mon, 30 May 2016 12:55:56 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/why-i-havent-fixed-your-issue/</guid>
+      <description>&lt;p&gt;Hey there. You posted an issue on one of my GitHub projects. It&amp;rsquo;s long past the point of being considered &amp;ldquo;stale&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t worry. I&amp;rsquo;m completely aware of it. I mean, GitHub was even kind enough to send me an e-mail letting me know about your issue. How thoughtful. I skimmed through the e-mail briefly. I even devoted some thought as to what could be the cause as I showered and got ready that morning. But, seeing as how I haven&amp;rsquo;t touched that project in months, even I&amp;rsquo;m not familiar enough with my own code anymore to be able to pinpoint the specifics.&lt;/p&gt;
+
+&lt;p&gt;But of course, you didn&amp;rsquo;t know any of this. I haven&amp;rsquo;t posted any follow-up comments. I haven&amp;rsquo;t even acknowledged the receipt of the request. You might have wondered if your request has gotten lost in the giant void of the interwebs, however crucial or urgent it may be to your current project. Allow me to explain why you haven&amp;rsquo;t heard from me.&lt;/p&gt;
+
+&lt;p&gt;Two years ago, I was a Junior in College. Sitting in class one day, it suddenly hit me like a ton of bricks. I realized that all the classmates around me were applying for internships. Wait, doesn&amp;rsquo;t that mean that &lt;em&gt;I&lt;/em&gt; should be doing internships too? I was abruptly all-too aware of my ignorance. How on earth was I going to set myself apart from other applicants?&lt;/p&gt;
+
+&lt;p&gt;So I started coding a few projects. I wanted to build something that I could use as a sort of &amp;lsquo;virtual resume&amp;rsquo;. I didn&amp;rsquo;t expect anything to come from it, outside of my own personal use, aside from learning purposes and to showcase to potential employers that I sort-of kind-of maybe possibly knew what I was talking about.&lt;/p&gt;
+
+&lt;p&gt;Well, that code actually did end up getting used. It by no means blew up or went viral, but a few people ended up using it. Seeing people use my code was exciting and rewarding. Collecting stars on GitHub was a guilty pleasure, similar to Instagram &amp;ldquo;likes&amp;rdquo; or any other type of “fake internet points”. I had time to work on improvements and bug fixes, and would even respond to issues within a day or two.&lt;/p&gt;
+
+&lt;p&gt;That coding eventually paid off. I finished my internships, graduated college, and now have full-time employment. With the recent purchase of a home (and all the projects that accompany that), religious responsibilities, and attempting to make time for social interactions, I&amp;rsquo;m lucky if I&amp;rsquo;m able to carve out an hour or two at the end of the day.&lt;/p&gt;
+
+&lt;p&gt;What do I like to do with that free time? Unfortunately for you, the answer is not, &amp;ldquo;Log onto GitHub, open up Sublime, fire up a dev environment, and try to re-create someone else&amp;rsquo;s issues.&amp;rdquo; I don&amp;rsquo;t mean to be rude. It&amp;rsquo;s just that most days, 8-10 hours is already spent fixing computer-related issues, that I don&amp;rsquo;t want to go home and do more. Usually, I just like to sit on the couch.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/netflix.png&#34; alt=&#34;Netflix&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You&amp;rsquo;re competing with this. Normally, you will lose.&lt;/p&gt;
+
+&lt;p&gt;So where does that leave you, random user of my code? Does your project have to be scrapped and/or reworked as to not include my old, deprecated, buggy, or sloppy code? Possibly. As with all things in life, there has to be an implied agreement between both creators and users of open-source projects. It goes something along the lines of this:&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;I agree to provide you with free code to solve a problem or add functionality to your project&lt;/li&gt;
+&lt;li&gt;I realize that by doing so, I remain somewhat responsible to you as a user&lt;/li&gt;
+&lt;li&gt;I agree to help you fix bugs you may find in my code&lt;/li&gt;
+&lt;li&gt;You agree that I am free to assign priority to the above points as I deem fit&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;This last point is really the main reason I haven&amp;rsquo;t yet resolved your issue. Your specific issue, however important it may be, collides with my attention to work, family, friends, netflix, or other interests. So here&amp;rsquo;s my message to you:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;I&amp;rsquo;ll do my best to get around to it. I really do want to help.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Until then, happy coding.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Migrate DHCP from Windows Server 2008 to 2012/2016</title>
+      <link>http://brycematheson.io/post/migrate-dhcp-server/</link>
+      <pubDate>Sun, 21 Feb 2016 14:52:14 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/migrate-dhcp-server/</guid>
+      <description>&lt;p&gt;A few weeks ago at work, I was tasked with the project of decommissioning one of our older Windows Server 2008 machines and upgrading it to Windows 2012. I was initially a little worried, seeing as this server ran a lot of key roles, such as DHCP, DNS, was a Domain Controller, and also acted as a print server as well as a few other services. As I was migrating the DHCP role, I wondered if there was a simple way of exporting all of the settings, such as DHCP scope and reserved IP addresses. Turns out there was, and it went off without a hitch!&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s how I did it:&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Log on to the old/existing DHCP server.&lt;/li&gt;
+&lt;li&gt;Click Start, click Run, type &lt;span class=&#34;smallcode&#34;&gt;cmd&lt;/span&gt; in the Open box, right-click, and then &amp;ldquo;Run as Administrator&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;On the Action menu, click Backup.&lt;/li&gt;
+&lt;li&gt;Type &lt;span class=&#34;smallcode&#34;&gt;netsh dhcp server export C:\Users&amp;lt;yourusername&amp;gt;\Desktop\dhcp.txt all&lt;/span&gt;, and then press ENTER.&lt;/li&gt;
+&lt;li&gt;Install the DHCP role on the new (2012) DHCP server using Server Manager.&lt;/li&gt;
+&lt;li&gt;Copy the exported DHCP text file to the desktop of the new DHCP server.&lt;/li&gt;
+&lt;li&gt;Verify that the DHCP service is installed and started on the new DHCP server.&lt;/li&gt;
+&lt;li&gt;Click Start, click Run, type &lt;span class=&#34;smallcode&#34;&gt;cmd&lt;/span&gt; in the Open box, right-click, and then &amp;ldquo;Run as Administrator&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Type &lt;span class=&#34;smallcode&#34;&gt;netsh dhcp server import C:\Users&amp;lt;yourusername&amp;gt;\Desktop\dhcp.txt all&lt;/span&gt;, and then press ENTER&lt;/li&gt;
+&lt;li&gt;Open DHCP console on the new server.&lt;/li&gt;
+&lt;li&gt;In the console tree, right-click DHCP.&lt;/li&gt;
+&lt;li&gt;Select &amp;ldquo;Authorize&amp;rdquo;.&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;If your old DHCP server is in the same network/subnet as the new DHCP server, you&amp;rsquo;ll notice that the old DHCP server has been de-authorized automatically. This is to prevent two DHCP servers from handing out conflicting addresses.&lt;/p&gt;
+
+&lt;p&gt;Check to make sure that your new DHCP has all of the same settings, options, scopes, and reservations set as the current one. If done correctly, everything should have been brought over. I was pretty impressed as to how well this worked and just how seamless it truly was.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Cisco Switch Initial Configuration</title>
+      <link>http://brycematheson.io/post/initial-config-of-cisco-switch/</link>
+      <pubDate>Sat, 30 Jan 2016 16:00:33 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/initial-config-of-cisco-switch/</guid>
+      <description>&lt;iframe width=&#34;700&#34; src=&#34;https://www.youtube.com/embed/NXVMAZi8eF8&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;The following are the different steps we&amp;rsquo;ll accomplish in this video:&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Configure Hostname&lt;/li&gt;
+&lt;li&gt;Disable name resolution&lt;/li&gt;
+&lt;li&gt;Configure management IP address&lt;/li&gt;
+&lt;li&gt;Configure default gateway&lt;/li&gt;
+&lt;li&gt;Configure a local username and password&lt;/li&gt;
+&lt;li&gt;Configure enable password&lt;/li&gt;
+&lt;li&gt;Configure secret password&lt;/li&gt;
+&lt;li&gt;Configure console password&lt;/li&gt;
+&lt;li&gt;Configure synchronous logging on console&lt;/li&gt;
+&lt;li&gt;Configure an exec timeout of 10 minutes over console&lt;/li&gt;
+&lt;li&gt;Configure telnet access with a password&lt;/li&gt;
+&lt;li&gt;Configure synchronous logging over vty (telnet) lines&lt;/li&gt;
+&lt;li&gt;Configure exec timeout of 5 minutes over vty (telnet) lines&lt;/li&gt;
+&lt;li&gt;Configure vty (telnet) and console lines to use the local username and password&lt;/li&gt;
+&lt;li&gt;Encrypt all current and future vty, console, and enable passwords&lt;/li&gt;
+&lt;li&gt;Once you’ve done all this be SURE to copy your running-config to startup-config&lt;/li&gt;&lt;/p&gt;
+
+&lt;p&gt;You can download the Word Doc of notes &lt;a href=&#34;http://brycematheson.io/docs/InitialSwitchConfiguration.docx&#34;&gt;by clicking here.&lt;/a&gt; The layout looks a little nicer in the Word Doc.&lt;/p&gt;
+
+&lt;h2&gt;Steps:&lt;/h2&gt;
+
+&lt;p&gt;&lt;li&gt;Configure Hostname – This is essentially the router’s name. It’s really easy to set.&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-Switch&amp;gt;en&#34;&gt;Switch#conf t
+Switch(config)#hostname Switch1 (or whatever you want it to be)
+Switch1(config)#
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Disable name resolution – This happens when you type in something wrong on accident and the router/switch thinks that you want to resolve that name to an ip address&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)#no ip domain-lookup
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Configure management IP address (to something like 192.168.0.100 with a subnet mask)&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)# int vlan1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Keep in mind that this is not a physical interface, it’s a logical interface. By default, on all new switches, Cisco throws every physical interface (i.e. fa0/1, fa0/2, etc) into vlan1. You can see which interfaces are assigned to which vlan by typing “show vlan brief”&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config-if)#ip address 192.168.0.100 255.255.255.0
+Switch1(config-if)#no shut
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Configure default gateway – The default gateway is your ip address of the router&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)#ip default-gateway 192.168.0.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Configure a local username and password&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)# username &amp;lt;username&amp;gt; password &amp;lt;password&amp;gt;
+(so for example) Switch1(config)# username TestAdmin password cisco
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Configure enable password&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1&amp;gt;en
+Switch1#conf t
+Switch1(config)#enable password &amp;lt;password&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can verify this worked by exiting all the way out and then at the “Switch1&amp;gt;” prompt, type &lt;span class=&#34;smallcode&#34;&gt;en&lt;/span&gt;. If you’re prompted for a password, success!
+The problem with this is that if you do a &lt;span class=&#34;smallcode&#34;&gt;show running-config&lt;/span&gt;, you’ll see this password listed in plain text. We’ll fix that in just a second.&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Configure secret password – this overrides the enable password that we just set&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1&amp;gt;en
+Switch1#conf t
+Switch1(config)#enable secret &amp;lt;secret password&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you log all the way out of everything and type &lt;span class=&#34;smallcode&#34;&gt;en&lt;/span&gt; at “Switch1&amp;gt;”, you’ll see that the original password you set (in the previous step) no longer works. The secret password overwrites that step and makes sure that the password doesn’t show in plain text.If you do a &lt;span class=&#34;smallcode&#34;&gt;show run&lt;/span&gt;, you’ll now see two entries:
+1. enable secret 5 $1$qpye$.6foHFFgbCR3oB2dgqjn0 (or something similar)
+The ‘5’ means that it’s hashed using MD5 (which is bad in todays encryption world. This is outdated).
+2.enable password &lt;password previously set&gt;
+You’ll also see the username and password that we created previously in step 5 is listed plain text.&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Configure console password – makes sure that someone MUST authenticate when trying to console in using a rollover cable (a rollover cable is an RJ-45 to Serial connector). To use it with most computers nowadays, you usually have to have a Serial-to-USB adapter, seeing as most computers don’t have a serial port anymore.&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1&amp;gt;en
+Switch1#conf t
+Switch1(config)#line con 0 (or just ‘con’ for short)
+Switch1(config-line)#password &amp;lt;password&amp;gt;
+Switch1(config-line)#login
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This command is &lt;strong&gt;crucial&lt;/strong&gt;. Without it, you won’t be able to log in over the console. Login forces the switch to use that password over the line.&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Configure synchronous logging on console – This prevents the switch from displaying informational messages that get in your way when you’re trying to type&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)#line con 0
+Switch1(config-line)#logging synchronous
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Configure an exec timeout of 10 minutes over console – This is a timeout. If there’s been no activity for X amount of minutes, you’ll get logged out. It’s just a basic security basic feature. You want this to be long enough that you don’t have to keep constantly logging in (like every minute or so), but you also don’t want it so long that someone could potentially hop on your computer if you step away for a minute.&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config-line)#exec-timeout &amp;lt;minutes&amp;gt;
+So, for example Switch1(config-line)#exec-timeout 10
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Configure telnet access with a password – Each switch has a different number of simultaneous lines that it supports.&lt;/li&gt;
+&lt;li&gt;To check to see how many lines your switch supports, you can type:&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)#line vty ?
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After doing this, you’ll see something like “(0-15) First Line number”. This tells you that you have 16 simultaneous telnet lines available&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)#line vty 0 4
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I’m only going to configure line 0 through 4, because I don’t need that many lines available. If you wanted, you could do &lt;span class=&#34;smallcode&#34;&gt;line vty 0 1&lt;/span&gt; to only configure one line available&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config-line)#password &amp;lt;password&amp;gt;
+Switch1(config-line)#login
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is the same as the console login. You &lt;strong&gt;MUST&lt;/strong&gt; type this.&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Configure synchronous logging over vty (telnet) lines&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config-line)#logging synchronous
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;li&gt;Configure exec timeout of 5 minutes over vty (telnet) lines&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config-line)#exec-timeout 5
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It’s probably a good idea to set this timeout to a lower time than your console line timeout, simply because it’s more likely that if you’re logging in remotely that someone could shoulder-surf or get on your computer than it is for someone to hijack a physical console-in session&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Configure vty (telnet) and console lines to use the local username and password&lt;/li&gt;
+In step 10, we just typed &lt;span class=&#34;smallcode&#34;&gt;login&lt;/span&gt; after we set the password. If you want, you can instead type &lt;span class=&#34;smallcode&#34;&gt;login local&lt;/span&gt;. This will require a username and password (that we set in step 4) rather than just a password that we set on the line.&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Encrypt all current and future vty, console, and enable passwords&lt;/li&gt;
+At this point, if you do a &lt;span class=&#34;smallcode&#34;&gt;show run&lt;/span&gt;, you’ll find that all of our line passwords (console and vty) as well as our local user passwords are all listed in plain text. To encrypt these, type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1(config)#service password-encryption
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This encrypts any current passwords we have, as well as any future passwords. Do a &lt;span class=&#34;smallcode&#34;&gt;show run&lt;/span&gt; again to verify this&lt;/p&gt;
+
+&lt;p&gt;&lt;li&gt;Once you’ve done all this be SURE to save all of your changes. Do this by typing:&lt;/li&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Switch1# copy running-config startup-config
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A shorter way to do this is &lt;span class=&#34;smallcode&#34;&gt;copy run start&lt;/span&gt;. If we don’t do this, when we restart our switch, all of our changes will be lost.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How to Console to a Cisco Device From a Mac</title>
+      <link>http://brycematheson.io/post/how-to-console-to-a-cisco-switch-on-a-mac/</link>
+      <pubDate>Fri, 29 Jan 2016 20:02:03 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/how-to-console-to-a-cisco-switch-on-a-mac/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve always felt that my networking skills were somewhat lacking. I passed all of the Cisco courses in school, but at the time, I think I was just too bogged down with other coursework that I never really had a chance to go back and learn it really well, and in-depth. Now, I&amp;rsquo;m kicking myself a little bit that I didn&amp;rsquo;t listen better, but I think I&amp;rsquo;ll force myself to learn it better now if I&amp;rsquo;m going at my own pace and I want to learn it for me, rather than a professor forcing me to do so.&lt;/p&gt;
+
+&lt;p&gt;As such, I went out and bought an older Cisco Switch on eBay (Catalyst 3550). Rather than connecting to it via telnet/SSH (which I&amp;rsquo;ll do eventually), the initial configuration has to be done over a console (rollover) cable. I had a little bit of trouble getting my Mac to see the device initially, so I&amp;rsquo;m writing up the steps on how to do that here. Mostly for myself, because I know I&amp;rsquo;ll forget, but for others as well.&lt;/p&gt;
+
+&lt;p&gt;The first thing you&amp;rsquo;ll need is to get a rollover cable. It looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/how-to-console-to-a-cisco-device-1.jpg&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Sorry for the poor image quality, but you get the idea. One one end is an RJ-45 (Ethernet) connector, and on the other is a serial connector. The problem, however, is that most Macs (or any computer for that matter) these days, don&amp;rsquo;t have a serial port. Rather than keeping an old computer around (which I know a few people do just to have access to that port), you can buy an adapter.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/how-to-console-to-a-cisco-device-2.jpg&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once the rollover cable and adapter are connected together, go ahead and insert the RJ-45 end of the connector into the &amp;ldquo;Console&amp;rdquo; port on your Cisco Device. Insert the USB end into your Mac. The console port on your device should look something like this and will be labeled &amp;ldquo;CON&amp;rdquo; or &amp;ldquo;CONSOLE&amp;rdquo;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/how-to-console-to-a-cisco-device-3.jpg&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, you&amp;rsquo;ll have to download the driver for your serial device. You can do this by visiting &lt;a href=&#34;http://plugable.com/drivers/prolific/&#34; target=&#34;_blank&#34;&gt;&lt;a href=&#34;http://plugable.com/drivers/prolific/&#34;&gt;http://plugable.com/drivers/prolific/&lt;/a&gt;&lt;/a&gt; and downloading the Prolific Drivers. As of this writing, you&amp;rsquo;ll want the one entitled, &amp;ldquo;PL2303 Prolific Mac OS X 10.9, 10.10, and 10.11 v1.6.0&amp;rdquo;. Install the software and then reboot.&lt;/p&gt;
+
+&lt;p&gt;Next, open up Terminal and type:&lt;/p&gt;
+
+&lt;p&gt;&lt;span class=&#34;smallcode&#34;&gt;ioreg -c IOSerialBSDClient | grep usb&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;You should see something along the lines of:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/how-to-console-to-a-cisco-device-4.png&#34; width=&#34;656&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, open &amp;ldquo;System Preferences&amp;rdquo; and then &amp;ldquo;Network&amp;rdquo;. Verify that you have something along the lines of &amp;ldquo;USB Serial Controller D&amp;rdquo;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/how-to-console-to-a-cisco-device-5.jpg&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Last, go back to your terminal and type &lt;span class=&#34;smallcode&#34;&gt;screen /dev/cu.usbserial&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;If everything was done correctly, you should now be talking to your switch/router/device!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/how-to-console-to-a-cisco-device-6.png&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Slow Windows 10 Performance in VMWare Fusion</title>
+      <link>http://brycematheson.io/post/slow-windows-10-performance-in-vmware-fusion/</link>
+      <pubDate>Mon, 25 Jan 2016 22:35:27 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/slow-windows-10-performance-in-vmware-fusion/</guid>
+      <description>&lt;p&gt;When Windows 10 was released in July, I had a little bit of a bad taste in my mouth and a sense that it just wasn&amp;rsquo;t quite &amp;ldquo;finished&amp;rdquo; yet. It seemed to me that it was lacking the polish that really completed the project and made it a viable choice for use as a daily OS. Turns out my bad first impression was mostly due to that fact that I was running it through VMWare Fusion on my Mac. You can read &lt;a href=&#34;http://www.brycematheson.io/post/windows-10-first-impressions/&#34;&gt;my initial impressions here.&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After being forced to upgrade to Windows 10 on desktop at work, I realized that I actually really enjoyed Windows 10. I didn&amp;rsquo;t experience any of the lag or performance issues that I had on my Mac back home, even though my MacBook is newer and faster.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been too busy to be able to revisit the issue and try to get a version that I&amp;rsquo;m actually content with on my MacBook Pro. I had no issues whatsoever running Windows 7 or Windows 8 as a VM through VMWare Fusion and performance wasn&amp;rsquo;t an issue at all, even with just 1 or 2GB of memory allocated to it. I don&amp;rsquo;t use it for any hardcore video editing or anything, but just the occasional Windows app that doesn&amp;rsquo;t play nicely with Mac OS X.&lt;/p&gt;
+
+&lt;p&gt;This weekend, I finally had a chance to play around with a bit more. Previously, Windows 10 on VMWare would be &lt;em&gt;painfully slow&lt;/em&gt;. Beyond the point of being usable.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve found a &amp;ldquo;sort of&amp;rdquo; workaround. I installed the 32-bit version of Windows 10 (on accident), and was surprised that it didn&amp;rsquo;t seem to suffer (as badly) with lag as the 64-bit version did. It&amp;rsquo;s still not great, and it&amp;rsquo;s still not the same as running it natively on its own, but at least it&amp;rsquo;s now usable. I&amp;rsquo;ve also disabled &amp;ldquo;3D Acceleration&amp;rdquo; in the Display Settings, as well as Folder Sharing. Doing these three things together makes for a usable box.&lt;/p&gt;
+
+&lt;p&gt;Now, you may be thinking, &amp;ldquo;Really? You&amp;rsquo;re going to make me use a 32-bit OS in 2016? That&amp;rsquo;s soooooo 10 years ago.&amp;rdquo; Yes, well, deal with it. For me, the main benefits I get from running a 64-bit OS is being able to take full advantage of memory (as we all know that 32-bit OS&amp;rsquo;s can only use a maximum of 3.5GB). While this would normally be an issue, it isn&amp;rsquo;t for me, as I never allocate more than 2GB of RAM to my VMs. My MacBook only has a total of 8GB, so I don&amp;rsquo;t want to starve my main OS of resources.&lt;/p&gt;
+
+&lt;p&gt;Installing VM Tools and updating to the latest build of Windows 10 (1511, released in November) has seemed to improve speed as well.&lt;/p&gt;
+
+&lt;p&gt;Again, it&amp;rsquo;s not as responsive and speedy as I would like it to be, but it&amp;rsquo;s at least usable until VMWare can figure out their crap.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>OwnCloud - A Worthy Google Drive Competitor</title>
+      <link>http://brycematheson.io/post/owncloud-a-worthy-google-drive-competitor/</link>
+      <pubDate>Sat, 09 Jan 2016 21:07:41 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/owncloud-a-worthy-google-drive-competitor/</guid>
+      <description>
+
+&lt;h2 id=&#34;tldr&#34;&gt;TLDR;&lt;/h2&gt;
+
+&lt;p&gt;OwnCloud is a great tool, it&amp;rsquo;s easy to setup and maintain, and best of all &amp;ndash; it&amp;rsquo;s free. If you&amp;rsquo;re worried about hosting sensitive information on someone else&amp;rsquo;s servers in the cloud, it can definitely give you some peace of mind knowing that your files are kept on your server, and nobody can access them but you. However, Google&amp;rsquo;s datacenter is infinitely more stable than my old desktop computer running in a closet. I don&amp;rsquo;t have dual-redundant power supplies, redundant UPSs, redundant storage controllers, or a fault-tolerant RAID configuration. Not to mention, running a personal server &lt;sup&gt;24&lt;/sup&gt;&amp;frasl;&lt;sub&gt;7&lt;/sub&gt; can eat up electricity. It won&amp;rsquo;t be an unmanageable amount, but it certainly costs more than the $2/month I&amp;rsquo;m currently paying to Google. Unless you&amp;rsquo;re a techy that likes to tinker, or are uber-worried about security, it might just be easier to use Google Drive.&lt;/p&gt;
+
+&lt;h2 id=&#34;getting-started&#34;&gt;Getting Started&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been using Google Drive for my day-to-day cloud storage for at least the last two years. It&amp;rsquo;s more than exceeded my expectations, and I&amp;rsquo;ve never run into any issues with it. It just works. It gives me instant access to my files wherever I&amp;rsquo;m at, especially my KeePass database, which I find myself needing often. At one point, I found myself starting to reach the limit of my free 15GB, so I upgraded to the 100GB of storage for $1.99/month. I might be a tight-wad, but &lt;em&gt;even I&lt;/em&gt; can afford that.&lt;/p&gt;
+
+&lt;p&gt;However, being the techy that I am, whenever I hear about a new piece of software (not that OwnCloud is &amp;lsquo;new&amp;rsquo; per se, it&amp;rsquo;s been around a while) I just have to give it a try. Plus, OwnCloud would provide me with the added benefit of hosting my own content rather than placing it on someone else&amp;rsquo;s servers where prying eyes may potentially be.&lt;/p&gt;
+
+&lt;p&gt;So I grabbed an old desktop computer that I had sitting in the closet, loaded it up with a Hyper-V instance, and then spun up an Ubuntu 15.10 Server VM with a LAMP stack.&lt;/p&gt;
+
+&lt;p&gt;The install proved to be super simple. Once you&amp;rsquo;ve got a Linux box ready to go (I prefer Debian based distros, but you can easily install it on CentOS or another of your choice), it was as easy as adding the OwnCloud repo and then typing &lt;span class=&#34;smallcode&#34;&gt;sudo apt-get install owncloud&lt;/span&gt;. It will install all of the dependencies, if you don&amp;rsquo;t have them already, such as PHP and MySQL.&lt;/p&gt;
+
+&lt;p&gt;As there are already hundreds of guides on the Internet on how to install and configure OwnCloud, I won&amp;rsquo;t bother typing all that up, but &lt;a href=&#34;https://www.howtoforge.com/how-to-install-owncloud-7-on-ubuntu-14.04&#34; target=&#34;_blank&#34;&gt;this is a good guide&lt;/a&gt; to check out. It&amp;rsquo;s slightly outdated, but the steps mostly apply.&lt;/p&gt;
+
+&lt;p&gt;Once everything was set up, I downloaded the Mac client (Free) and also the iPhone app ($0.99 on the App Store). I then started copying files over to the OneCloud directory, and the desktop client automatically started to sync my files up to the server.&lt;/p&gt;
+
+&lt;p&gt;Syncing was decently quick, although it would&amp;rsquo;ve been nice if it were faster. Copying over 50GB of files took about 4 hours in my environment, but I&amp;rsquo;m pretty sure I&amp;rsquo;ve got some network latency that I need to fix, but just haven&amp;rsquo;t had the time to fix yet. It could also be that I didn&amp;rsquo;t allocate enough resources to my MySQL instance. Because each individual file has to be indexed and then entered into the MySQL database, that might have been the bottleneck.&lt;/p&gt;
+
+&lt;p&gt;The web interface is really slick and well-polished. It&amp;rsquo;s very similar to Google Drive in the fact that you can quickly traverse through a folder structure and move or delete things as you need. You can also share an individual file or folder with another OwnCloud user that you set up on your server, or you can make the folder public and provide a link to someone who doesn&amp;rsquo;t have any user permissions at all.&lt;/p&gt;
+
+&lt;h2 id=&#34;other-notes&#34;&gt;Other Notes&lt;/h2&gt;
+
+&lt;p&gt;&lt;li&gt;OwnCloud seems to struggle with lots of little files. Single, large files sync up quickly, but folders containing lots of little files seem to take longer to sync. Setting up a proper memcache helps with this.&lt;/li&gt;
+&lt;li&gt;SQLite is the default database set in place. DO NOT use this. Use MariaDB or MySQL.&lt;/li&gt;
+&lt;li&gt;It&amp;rsquo;s a bummer that the iPhone App isn&amp;rsquo;t free (I&amp;rsquo;m not sure about the Android app), but I can splurge and pay $0.99.&lt;/li&gt;
+&lt;li&gt;If you&amp;rsquo;re running apache, folder permissions must be granted to the www-data user.&lt;/li&gt;
+&lt;li&gt;For security purposes, you have to grant specific domains access to your OwnCloud environment. If you&amp;rsquo;re having problems connecting through the app, check this. You can add new domains through editing the &lt;span class=&#34;smallcode&#34;&gt;config.php&lt;/span&gt; file under the &amp;ldquo;config&amp;rdquo; folder.&lt;/li&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Ultimately, I think I&amp;rsquo;ll stick with OwnCloud, at least for a little while. It&amp;rsquo;s easy enough to configure and maintain. I don&amp;rsquo;t have any super-sensitive data that I&amp;rsquo;m not comfortable hosting out on Google Drive, but I figured I&amp;rsquo;ll get familiar with this system anyway.&lt;/p&gt;
+
+&lt;p&gt;As I mentioned above, I think Google Drive is really a better deal. If you have less than 100GB of stuff to store, the $2 is really a steal. When you calculate in the cost of everything you get with Google, it&amp;rsquo;s really the better deal. Google has a massive datacenter with state-of-the-art equipment that will be quicker than what most users have at home. They also have redundant power supplies, storage controllers, UPSs, and fault-tolerant RAID configurations to ensure that your data stays intact. That&amp;rsquo;s not to say you can&amp;rsquo;t set all of that up yourself at home, but the cost for that will never be returned compared to just hosting it on Google&amp;rsquo;s servers.&lt;/p&gt;
+
+&lt;p&gt;If you require more storage than 100GB, or you&amp;rsquo;re a small business that needs upwards of a few terabytes in storage space, you might be able to regain your cost back quicker. Google&amp;rsquo;s 1TB storage plan costs $9.99/month and goes up to $299.99/month for 30TB of storage space.&lt;/p&gt;
+
+&lt;p&gt;Overall, I&amp;rsquo;ve been impressed and highly recommend OwnCloud. However, if you want a no-fuss storage system, stick with Google Drive.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>4 Ways I Disagree with Dave Ramsey</title>
+      <link>http://brycematheson.io/post/four-ways-i-disagree-with-dave-ramsey/</link>
+      <pubDate>Sun, 03 Jan 2016 14:59:08 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/four-ways-i-disagree-with-dave-ramsey/</guid>
+      <description>
+
+&lt;p&gt;This is going to be another one of those posts that has nothing to do with technology, but again, it&amp;rsquo;s my blog so I can post whatever the hell I want.&lt;/p&gt;
+
+&lt;p&gt;I wouldn&amp;rsquo;t consider myself an &amp;ldquo;audiobook junkie&amp;rdquo;, but on long road trips, I definitely find myself passing the time quicker by listening to something other than music. Recently, I traveled home for the Holidays, which brought with it an 8-hour drive. I got tired of music after only an hour or two, and so I pulled up Dave Ramsey.&lt;/p&gt;
+
+&lt;p&gt;When I&amp;rsquo;m not dabbling with a technology side project, other hobbies include reading/learning about investing and finance. Now, most of the time, I side with pretty much everything that Dave advises. One thing that I really love about Dave is his &amp;ldquo;my way or the highway&amp;rdquo; attitude. Dave isn&amp;rsquo;t afraid to tell someone what he thinks. He&amp;rsquo;s not worried about hurting anyone&amp;rsquo;s feelings, and he&amp;rsquo;ll tell them flat out what they need to hear. As I listened to Dave counsel people during my drive, I realized a number of points where I disagree with him.&lt;/p&gt;
+
+&lt;h2 id=&#34;credit-cards-are-not-evil&#34;&gt;Credit Cards are not evil&lt;/h2&gt;
+
+&lt;p&gt;I don&amp;rsquo;t use a Debit Card. Period. I rarely write checks, too. There are a few things I pay cash for (such as a car payment, and rent), but 99% of the purchases I make go on to a credit card. Why? Security. I&amp;rsquo;ve heard horror stories about peoples&amp;rsquo; debit cards being stolen, and their bank accounts being wiped out. Sure, you can file a police report and at some point, possibly, get those funds returned, but there&amp;rsquo;s no guarantee. And in that three to four months that it may take for the entire process to work out, you could be left without any cash for day-to-day living.&lt;/p&gt;
+
+&lt;p&gt;Credit Cards are much safer, in my opinion. Should I find any fraudulent charges on my account, I call the bank (or more often than not, they call me), I pay $50, and those funds are removed. No muss, no fuss.&lt;/p&gt;
+
+&lt;p&gt;Additionally, I actually MAKE money through rewards points and cash back using a credit card that I wouldn&amp;rsquo;t receive otherwise through using a debit card.&lt;/p&gt;
+
+&lt;p&gt;The fact is, credit cards are not evil. They have a negative connotation because of the people who use them improperly and purchase things they don&amp;rsquo;t have the cash to pay for. If you have discipline and pay off the cards each month, there&amp;rsquo;s nothing to worry about. Personal responsibility is the problem, not credit cards.&lt;/p&gt;
+
+&lt;h2 id=&#34;do-not-hold-off-retirement-savings-during-the-first-three-baby-steps&#34;&gt;Do not hold off retirement savings during the first three baby steps&lt;/h2&gt;
+
+&lt;p&gt;Compound interest is a beautiful thing. Especially if you&amp;rsquo;re young (I&amp;rsquo;m in my twenties). Time can definitely be used to the advantage in my case.&lt;/p&gt;
+
+&lt;p&gt;Dave lays out seven baby steps. First, save a $1000 emergency fund. Two, pay off all debt (excluding the house). Three, save three to six months of monthly expenses (which will be added to the emergency fund). Steps four, five, six, and seven include paying 15% of your monthly income into retirement, paying off the house, saving for kids&amp;rsquo; college funds, and giving aggressively and generously.&lt;/p&gt;
+
+&lt;p&gt;During the first three steps, Dave advises to put a temporary hold on all retirement savings to help knock out the debt. While I&amp;rsquo;m (luckily) not part of the group with $100k+ in debt, imagine these people and how long it will take to knock out that amount. By pausing retirement savings for say, five to seven years, with an amount this large, you&amp;rsquo;re missing out on a lot of free money through employer matching as well as compound effects.&lt;/p&gt;
+
+&lt;p&gt;While retirement saving does seem to take a significant chunk out of a paycheck, I don&amp;rsquo;t know that it would make &lt;em&gt;that&lt;/em&gt; big of a difference in paying off debts. More money, more problems.&lt;/p&gt;
+
+&lt;h2 id=&#34;living-without-credit-is-not-impossible-but-it-s-difficult&#34;&gt;Living without credit is not impossible, but it&amp;rsquo;s difficult&lt;/h2&gt;
+
+&lt;p&gt;Dave often tells listeners that living without credit is fine, and better than that, it&amp;rsquo;s easy. Just pay cash for everything! Need a car? Doesn&amp;rsquo;t matter what your FICO score is, because you won&amp;rsquo;t be getting a loan, you&amp;rsquo;ll be paying with cash. He says getting rental cars and apartments don&amp;rsquo;t require a FICO credit score, either.&lt;/p&gt;
+
+&lt;p&gt;A little side story: As a 19-year old, I served as a Mormon missionary in Albuquerque, New Mexico. The Mormon church prides itself on the principles of staying debt-free. At one point, we had to search for a new apartment. The Church covers housing and a few living expenses while serving. As such, the apartments would be under the Churches name. Everywhere that we went to apply for an apartment, we had the most difficult time, because most complexes require previous credit history. Where the Church had none, very few people would rent to us.&lt;/p&gt;
+
+&lt;p&gt;Although the Church was completely financially sound and would have absolutely no trouble paying the monthly rent, apartment managers didn&amp;rsquo;t necessarily believe that. Ultimately, we had to bring some statements from the bank showing current account balances and more to prove that we would be responsible tenants and pay our bills on time.&lt;/p&gt;
+
+&lt;p&gt;It was all frustrating, and an unnecessary waste of time. So, again, while it is possible to live without a FICO score, there are small things that depend on it. Having a good FICO credit score is a way of life in our current day and age.&lt;/p&gt;
+
+&lt;h2 id=&#34;12-returns-are-not-realistic&#34;&gt;12% returns are not realistic&lt;/h2&gt;
+
+&lt;p&gt;Dave often states that a 12% return is &amp;ldquo;average&amp;rdquo; for the stock market and mutual funds. Dave bases his information on the twenty years between 1980 and 2000, which truly did have great rates of return during that time.&lt;/p&gt;
+
+&lt;p&gt;Today, however, things are different. The baby boomer generation is beginning to retire, and are moving their investments into more conservative stocks and funds.&lt;/p&gt;
+
+&lt;p&gt;Now, that&amp;rsquo;s not to say that you still can&amp;rsquo;t earn a good amount using the stock market. I think 12% is still a bit too optimistic, however. I think many people following Dave&amp;rsquo;s investment advice are going to be surprised, come retirement, expecting 12% returns and coming up short. Warren Buffet&amp;rsquo;s 7% average rate of return is probably a little closer.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I don&amp;rsquo;t mean to come off as a hater of Dave Ramsey and his principles. I think he does an incredible job at getting people motivated to get out of debt, and I&amp;rsquo;ll continue to listen to his radio show. The problem is that the audience that he caters to are a small group, and his teachings don&amp;rsquo;t necessarily reflect the general population. Dave does a great job teaching the uneducated and those looking for a change in their life, and his principles of saving and not going into debt are great. However, his investment advice leaves much to be desired.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>10 Things I Wish I Could Tell My College Self</title>
+      <link>http://brycematheson.io/post/10-things-i-wish-i-could-tell-my-college-self/</link>
+      <pubDate>Sat, 19 Dec 2015 09:27:38 -0700</pubDate>
+      
+      <guid>http://brycematheson.io/post/10-things-i-wish-i-could-tell-my-college-self/</guid>
+      <description>
+
+&lt;p&gt;I graduated college, yesterday. As such, it&amp;rsquo;s been a little bit of an emotional morning, as homo as that makes me sound and feel. I&amp;rsquo;ve been sitting here reminiscing about all the great times that I&amp;rsquo;ve had, people I&amp;rsquo;ve met, and experiences that I&amp;rsquo;ll hold and treasure forever. I also think back to all the dumb, idiotic things I did, and wish I could go back in time and do-over. My younger brother starts school in two weeks, at the very same University from which I just graduated. Here are ten things that I wish I could go back and tell my younger, college self.&lt;/p&gt;
+
+&lt;h2 id=&#34;1-internships&#34;&gt;1. Internships&lt;/h2&gt;
+
+&lt;p&gt;About my Junior year in school, I started to notice people doing these weird things called &amp;ldquo;internships.&amp;rdquo; Honestly, I&amp;rsquo;m not really sure why I put them off for so long, but one day, it hit me like a ton of bricks. I was faced with an all-too-startling reality that I was behind everyone else. And I was. Although it was a requirement for graduation, for some reason I told myself that internships are something that &amp;ldquo;seniors do.&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;I scrambled to find something that would fulfill the requirements. I submitted resumes upon resumes upon resumes, interviewed multiple places, and STILL heard nothing from any of them for four months. Soon, offers started to trickle in, and I was actually able to complete two internships back-to-back. This provided me enough experience to land the job I have currently (working for a different company than where I did the internship). If I could go back and do it all over, I would jump on internships much earlier, even trying to complete one a year, during the summers.&lt;/p&gt;
+
+&lt;p&gt;Whether it&amp;rsquo;s paid or not, experience is invaluable.&lt;/p&gt;
+
+&lt;h2 id=&#34;2-you-don-t-have-to-land-a-job-working-for-google&#34;&gt;2. You don&amp;rsquo;t have to land a job working for Google&lt;/h2&gt;
+
+&lt;p&gt;Going along with my first point, I was a little disappointed when I got internship offers from a Church and a Hospital, while others were getting offers from Google, Apple, Intel, and the like. After speaking with friends later, I realized that their employment doesn&amp;rsquo;t sound nearly as enjoyable as mine does. These friends, working at these humongous companies, are a very small cog in an incredibly large machine. Their work makes little to no difference to the company as a whole, and they could easily be fired tomorrow without anyone noticing.&lt;/p&gt;
+
+&lt;p&gt;I landed a job for a small company in Idaho, with about 200 employees. The IT department consists of myself and one other person. When things aren&amp;rsquo;t running, I&amp;rsquo;m the one responsible for it. And I &lt;em&gt;love&lt;/em&gt; it. I wouldn&amp;rsquo;t have it any other way. Sure, Google may pay better wages, and I&amp;rsquo;m sure their departments are actually allocated money with which to spend, but I&amp;rsquo;m comfortable with where I&amp;rsquo;m at, and I feel like a make a difference &lt;em&gt;daily&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;3-take-stupid-fun-classes&#34;&gt;3. Take stupid/fun classes&lt;/h2&gt;
+
+&lt;p&gt;I worried too much about only taking classes that would fulfill my major requirements. I maybe took one or two elective classes, but I should&amp;rsquo;ve branched out more. I wanted to take a welding class. And an accounting class. And an archery class. I never took any of them. Those had absolutely nothing to do with anything, but who cares? If you&amp;rsquo;re not sure what you want to do, try it out.&lt;/p&gt;
+
+&lt;h2 id=&#34;4-travel&#34;&gt;4. Travel&lt;/h2&gt;
+
+&lt;p&gt;This may sound dumb, especially considering that most college budgets are relatively limited in terms of funds, but that doesn&amp;rsquo;t mean you have to spend an arm and a leg. Hop in the car, and go to Vegas for the weekend. Or Arches National Park. Or even, fly to LA and take a 3-day cruise to Mexico. Travel. Do it. Grab a couple friends to split gas and hotel costs. Because once you graduate, you&amp;rsquo;ll only get 10 vacation days a year, have three kids, and you&amp;rsquo;ll regret not taking more advantage of your free time.&lt;/p&gt;
+
+&lt;h2 id=&#34;5-date-more&#34;&gt;5. Date more&lt;/h2&gt;
+
+&lt;p&gt;Throughout school, I was so worried about having &amp;ldquo;someone,&amp;rdquo; that I feel like I jumped into long-term relationships too quickly. The few girls I did date in school were incredible, and I don&amp;rsquo;t regret that at all. But I do wish I would&amp;rsquo;ve dated more girls, for shorter amounts of time. Taste all the different flavors. I wish I would have asked out more complete strangers. And please be more creative than &amp;ldquo;dinner and a movie&amp;rdquo;. Sometimes just grabbing some hot chocolate and going for a walk is best.&lt;/p&gt;
+
+&lt;p&gt;In Mormon culture, it&amp;rsquo;s easy to feel like a failure if you leave college without finding a spouse. I definitely don&amp;rsquo;t feel that I can sympathize with that crowd, but I do understand how the dating pool dries up considerably once you leave. So live it up. Date. A lot.&lt;/p&gt;
+
+&lt;h2 id=&#34;6-quit-rushing-but-don-t-stall-either&#34;&gt;6. Quit rushing (but don&amp;rsquo;t stall, either)&lt;/h2&gt;
+
+&lt;p&gt;Why I finished school in three and a half years, I&amp;rsquo;ll never know. I always took at least 3 credits during the Summer over the break, sometimes I even took a full load of 12 credits. Maybe I was trying to save money? Or just &amp;ldquo;be done with it all&amp;rdquo; so I could move onto a different stage of life? I regret that slightly. Live it up, take your time. There&amp;rsquo;s really no rush. College has been the most fun time of my life, and I think I should have soaked it up more.&lt;/p&gt;
+
+&lt;h2 id=&#34;7-hold-off-on-buying-books&#34;&gt;7. Hold off on buying books&lt;/h2&gt;
+
+&lt;p&gt;I can&amp;rsquo;t even count the number of times I purchased college textbooks that cost hundreds of dollars, just to discover that the professor rarely, if ever, referenced them. Wait until you NEED the book before buying it. Most of the time, I resorted to renting books, which saved lots of money as well.&lt;/p&gt;
+
+&lt;h2 id=&#34;8-working-is-a-good-thing&#34;&gt;8. Working is a good thing&lt;/h2&gt;
+
+&lt;p&gt;I worked anywhere from 20 to 40 hours a week all through school, because I refused to ask Mommy and Daddy for money. I thought I would find myself &amp;ldquo;missing out&amp;rdquo; a lot, because I would be at work while everyone else was having fun or partying. In reality, my roommates who didn&amp;rsquo;t work, mostly just sat on the couch watching TV all day, and then once I got home, we would go out and party. Sure, I bet I missed out on a couple of things, because I was at work. But in the rare event my work times conflicted with a social event, my boss was more than flexible in letting me off, or I could request the time off in advanced.&lt;/p&gt;
+
+&lt;p&gt;Work took up just enough of my schedule to allow me to feel productive as well. I never had enough free time to be bored.&lt;/p&gt;
+
+&lt;h2 id=&#34;9-it-s-okay-that-you-re-broke&#34;&gt;9. It&amp;rsquo;s okay that you&amp;rsquo;re broke&lt;/h2&gt;
+
+&lt;p&gt;So what if you only have $0.62 in your bank account. It&amp;rsquo;s okay. Mom and Dad are there if an emergency happens. I always wanted to be super financially secure and stable all through college. I remember expressing this to my Mom once and she said, &amp;ldquo;It&amp;rsquo;s okay, honey. It&amp;rsquo;s not your job to be wealthy in college. Your job right now is to get through school. Once you graduate, your job then will be to provide and support yourself.&amp;rdquo; That was really comforting. So you don&amp;rsquo;t have more than $300 in savings? It&amp;rsquo;s okay.&lt;/p&gt;
+
+&lt;h2 id=&#34;10-success-comes-from-humility-and-hard-work-no-you-re-not-the-shiz&#34;&gt;10. Success comes from humility and hard work (no, you&amp;rsquo;re not the shiz)&lt;/h2&gt;
+
+&lt;p&gt;Sadly, I&amp;rsquo;ve had a somewhat cocky attitude my entire life, especially throughout college. Often times, I found that my cockiness was just a failed attempt at covering up insecurities. You&amp;rsquo;re not going to get anywhere with that attitude. Be confident, but not cocky. Success is going to come through hard work, grit, and humility.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;In all, I had an incredible time in college. I&amp;rsquo;m glad to be done, and I&amp;rsquo;m excited for the new phase in my life. But I&amp;rsquo;m always going to miss it.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

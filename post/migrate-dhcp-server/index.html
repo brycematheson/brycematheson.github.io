@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/migrate-dhcp-server/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2016-02-21T14:52:14-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>How to Migrate DHCP from Windows Server 2008 to 2012/2016 &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">How to Migrate DHCP from Windows Server 2008 to 2012/2016</h3>
+        <p class="f-post-time"><time datetime="2016-02-21T14:52:14-07:00">February 21, 2016</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <p>A few weeks ago at work, I was tasked with the project of decommissioning one of our older Windows Server 2008 machines and upgrading it to Windows 2012. I was initially a little worried, seeing as this server ran a lot of key roles, such as DHCP, DNS, was a Domain Controller, and also acted as a print server as well as a few other services. As I was migrating the DHCP role, I wondered if there was a simple way of exporting all of the settings, such as DHCP scope and reserved IP addresses. Turns out there was, and it went off without a hitch!</p>
+
+<p>Here&rsquo;s how I did it:</p>
+
+<p><li>Log on to the old/existing DHCP server.</li>
+<li>Click Start, click Run, type <span class="smallcode">cmd</span> in the Open box, right-click, and then &ldquo;Run as Administrator&rdquo;.</li>
+<li>On the Action menu, click Backup.</li>
+<li>Type <span class="smallcode">netsh dhcp server export C:\Users&lt;yourusername&gt;\Desktop\dhcp.txt all</span>, and then press ENTER.</li>
+<li>Install the DHCP role on the new (2012) DHCP server using Server Manager.</li>
+<li>Copy the exported DHCP text file to the desktop of the new DHCP server.</li>
+<li>Verify that the DHCP service is installed and started on the new DHCP server.</li>
+<li>Click Start, click Run, type <span class="smallcode">cmd</span> in the Open box, right-click, and then &ldquo;Run as Administrator&rdquo;.</li>
+<li>Type <span class="smallcode">netsh dhcp server import C:\Users&lt;yourusername&gt;\Desktop\dhcp.txt all</span>, and then press ENTER</li>
+<li>Open DHCP console on the new server.</li>
+<li>In the console tree, right-click DHCP.</li>
+<li>Select &ldquo;Authorize&rdquo;.</li></p>
+
+<p>If your old DHCP server is in the same network/subnet as the new DHCP server, you&rsquo;ll notice that the old DHCP server has been de-authorized automatically. This is to prevent two DHCP servers from handing out conflicting addresses.</p>
+
+<p>Check to make sure that your new DHCP has all of the same settings, options, scopes, and reservations set as the current one. If done correctly, everything should have been brought over. I was pretty impressed as to how well this worked and just how seamless it truly was.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=How%20to%20Migrate%20DHCP%20from%20Windows%20Server%202008%20to%202012%2f2016&url=http%3a%2f%2fbrycematheson.io%2fpost%2fmigrate-dhcp-server%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fmigrate-dhcp-server%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fmigrate-dhcp-server%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

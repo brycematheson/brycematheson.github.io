@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="How to configure a custom domain name for your website hosted on GitHub pages.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/configure-custom-domain-name-github-pages/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2015-12-01T19:43:05-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Configure Custom Domain Name for GitHub Pages using NameCheap &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Configure Custom Domain Name for GitHub Pages using NameCheap</h3>
+        <p class="f-post-time"><time datetime="2015-12-01T19:43:05-07:00">December 1, 2015</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <p>So you&rsquo;ve got a fancy new blog, hosted on GitHub Pages, and you&rsquo;re ready to show it off to the world? You can access it via <a href="username.github.io" target="_blank">username.github.io</a>, but that&rsquo;s still not good enough. Well, lucky for you, it&rsquo;s pretty easy.</p>
+
+<p>As I was trying to set up my blog with a custom domain, I was also attempting to use <a href="http://www.cloudflare.com" target="_blank">CloudFlare</a> as my CDN before I even got my custom domain name up and running, and so that definitely messed me up trying to get everything working. Eventually, I ultimately just ditched CloudFlare altogether (there may be a blog post coming about that. I don&rsquo;t know) because a static site running on GitHub pages is quick enough.</p>
+
+<p>I eventually got it all figured out, and I decided I&rsquo;d share how to do it. I&rsquo;m using NameCheap as my domain registrar, but you should be able to use these steps for whoever you want to choose (GoDaddy, HostGator, whoever).</p>
+
+<p>First things first, you&rsquo;ll want to upload a file called <span class="smallcode">CNAME</span> (without any extensions) to the root directory of your GitHub Pages repo. Inside of it, you&rsquo;ll want to put the url of your custom domain (i.e. &ldquo;www.yoursitehere.com&rdquo;). In my case, obviously, my CNAME contains &ldquo;www.brycematheson.io&rdquo;.</p>
+
+<p><img src="http://brycematheson.io/img/post_images/customdomainnamegithubpages2.png" alt="GitHub CNAME" /></p>
+
+<p>Once you&rsquo;ve done that, head on over to NameCheap.com. Under &ldquo;Account&rdquo;, select &ldquo;Domain List&rdquo;. Next to the domain that you want to use as your custom domain name for your site/blog, click &ldquo;Manage&rdquo;. Then, select &ldquo;Advanced DNS&rdquo; from the top menu and you should see something like this:</p>
+
+<p><img src="http://brycematheson.io/img/post_images/customdomainnamegithubpages3.png" alt="NameCheap Advanced DNS" /></p>
+
+<p>You&rsquo;ll want to create four entries:</p>
+
+<p><li>The first entry will be an &ldquo;A Record&rdquo; type, with an &ldquo;@&rdquo; as your host, and an IP Address of <span class="smallcode">192.30.252.153</span>.</li>
+<li>The second entry will be nearly identical to the first entry, except have an IP Address of <span class="smallcode">192.30.252.154</span>.</li>
+<li>The third entry will be a type of &ldquo;CNAME Record&rdquo;, with a host of &ldquo;www&rdquo;, and in the values column, you&rsquo;ll want to put the current path to your GitHub Pages site (i.e. <span class="smallcode">username.github.io</span>).</li>
+<li>And the fourth will be similar to the third entry, except in the value column, you&rsquo;ll want to enter the name of your custom domain.</li></p>
+
+<p>If all else fails, just refer to the picture above as a guide. Wait about 20-30 minutes for your domain to propagate, and you should be in business.</p>
+
+<p>One last thing to mention: Under my third entry, in the &ldquo;TTL column&rdquo;, I have it set to 20 minutes. Why? I don&rsquo;t know. I&rsquo;ve been playing with it, but haven&rsquo;t noticed much of a change. I&rsquo;ll report back if I figure out anything cool.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Configure%20Custom%20Domain%20Name%20for%20GitHub%20Pages%20using%20NameCheap&url=http%3a%2f%2fbrycematheson.io%2fpost%2fconfigure-custom-domain-name-github-pages%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fconfigure-custom-domain-name-github-pages%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fconfigure-custom-domain-name-github-pages%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/install-php7-ubuntu-linux/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2015-12-09T21:13:30-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Install PHP 7 on Ubuntu Linux &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Install PHP 7 on Ubuntu Linux</h3>
+        <p class="f-post-time"><time datetime="2015-12-09T21:13:30-07:00">December 9, 2015</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        <p>Less than a week ago, PHP 7.0 was released. It&rsquo;s the first major release since PHP 5.0 was released in 2004, and there have been some pretty incredible improvements. For the past few weeks, I&rsquo;ve been perusing the interwebs looking at various performance benchmarks of PHP 7 vs PHP 5.6. Most, if not all, statistics I&rsquo;ve seen have shown that in almost all cases, it performs at least 2x quicker for the exame same code base.</p>
+
+<p>Borrowing the script from <a href="http://www.php-benchmark-script.com" target="_blank"><a href="http://www.php-benchmark-script.com">http://www.php-benchmark-script.com</a></a>, I ran a few performance tests of my own.</p>
+
+<p>Check out this output for PHP 5.5:</p>
+
+<pre><code class="language-sh">--------------------------------------
+|        PHP BENCHMARK SCRIPT        |
+--------------------------------------
+Start : 2015-12-08 03:27:18
+Server : ubuntuserver@10.7.1.154
+PHP version : 5.5.9-1ubuntu4.11
+Platform : Linux
+--------------------------------------
+test_math                 : 0.826 sec.
+test_stringmanipulation   : 0.916 sec.
+test_loops                : 0.528 sec.
+test_ifelse               : 0.415 sec.
+--------------------------------------
+Total time:               : 2.685 sec.
+</code></pre>
+
+<p>The difference for PHP 7 is pretty astounding:</p>
+
+<pre><code class="language-sh">--------------------------------------
+|        PHP BENCHMARK SCRIPT        |
+--------------------------------------
+Start : 2015-12-08 03:42:44
+Server : ubuntu@10.7.1.155
+PHP version : 7.0.0
+Platform : Linux
+--------------------------------------
+test_math                 : 0.225 sec.
+test_stringmanipulation   : 0.337 sec.
+test_loops                : 0.224 sec.
+test_ifelse               : 0.267 sec.
+--------------------------------------
+Total time:               : 1.053 sec.
+</code></pre>
+
+<p>With the stable release (I never played with the beta), I attempted to install PHP 7.0. I ran into a few struggles, but I found that turning to Google didn&rsquo;t provide me with much, as it&rsquo;s still not exactly mainstream. I finally got it up and running, so I figured I&rsquo;d share what I did to install. Some of these steps may be common place to you, but I&rsquo;m by no means a Linux SysAdmin.</p>
+
+<p>I ran this successfully on Ubuntu 14.04, but I&rsquo;m sure this will work with newer versions (15.04, 15.10, etc) as well as older versions too. Eventually, newer releases of Ubuntu will come with PHP 7 by default, but this will have to hold us over until then. Open up a command prompt and type in the following commands:</p>
+
+<pre><code class="language-sh">$ sudo apt-get install python-software-properties
+$ sudo add-apt-repository ppa:ondrej/php-7.0
+$ sudo apt-get update
+$ sudo apt-get install -y php7.0
+</code></pre>
+
+<p>In addition, you may have to run the following command to install some of the other necessary plugins. It wasn&rsquo;t until this that I was able to actually execute code through Apache.</p>
+
+<pre><code class="language-sh">$ sudo apt-get install libapache2-mod-php7.0 php7.0-mysql php7.0-curl php7.0-json
+</code></pre>
+
+<h2>Test to see if it's running</h2>
+
+<p>Once you have all the above finished, to test and make sure that PHP is installed correctly, simple execute the following command.</p>
+
+<pre><code class="language-sh">php -v
+</code></pre>
+
+<p>You should see something similar to this:</p>
+
+<p><img src="http://brycematheson.io/img/post_images/php7-install.png" alt="PHP Version 7 Screenshot" /></p>
+
+<p>You should see version PHP 7 listed as the current version. If that still isn&rsquo;t enough proof for you, this option might actually even be better for you. Navigate to <span class="smallcode">/var/www/html</span> on your Linux box, create a new file called &ldquo;index.php&rdquo; (which you can do by typing <span class="smallcode">touch index.php</span>) and then opening that file in a text editor.</p>
+
+<p>Enter the following code:</p>
+
+<pre><code class="language-php">&lt;?php
+	phpinfo();
+?&gt;
+</code></pre>
+
+<p>Now, in a browser, if you navigate to &ldquo;<a href="http://localhost&quot;">http://localhost&quot;</a>, you should be greeted with a purple screen that says, &ldquo;PHP Version 7.0.0&rdquo; in a large heading.</p>
+
+<h2>Install MySQL and Apache</h2>
+
+<p>The above step will only work if you have an Apache Web Server running. In my case, 99% of the time that I install Apache, I also install MySQL in conjunction so I can have a complete LAMP stack. Use the following commands to install either Apache or MySQL.</p>
+
+<p>Apache:</p>
+
+<pre><code class="language-sh">$ sudo add-apt-repository ppa:ondrej/apache2
+$ sudo apt-get update
+$ sudo apt-get install apache2
+</code></pre>
+
+<p>MySQL:</p>
+
+<pre><code class="language-sh">$ sudo add-apt-repository -y ppa:ondrej/mysql-5.6
+$ sudo apt-get update
+$ sudo apt-get install mysql-server-5.6
+</code></pre>
+
+<p>Did this work for you? Did you run into any issues? Let me know in the comments.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Install%20PHP%207%20on%20Ubuntu%20Linux&url=http%3a%2f%2fbrycematheson.io%2fpost%2finstall-php7-ubuntu-linux%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2finstall-php7-ubuntu-linux%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2finstall-php7-ubuntu-linux%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>

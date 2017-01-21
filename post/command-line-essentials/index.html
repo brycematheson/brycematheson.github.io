@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" prefix="og: http://ogp.me/ns#" xmlns:og="http://ogp.me/ns#"><!--<![endif]-->
+
+    <head>
+                <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="author" content="">
+  
+	
+        <meta property="og:site_name" content="Brycematheson.io">
+        <meta property="og:title" content="Brycematheson.io">
+        <meta property="og:url" content="http://brycematheson.io/post/command-line-essentials/">
+        <meta property="og:description" content="Making the web fun again">
+    
+        <meta property="og:type" content="article" />
+        <meta property="og:article:author" content="" />
+        <meta property="og:article:published_time" content="2015-02-20T18:50:20-07:00" />
+    
+        <meta name="generator" content="Hugo 0.18.1" />
+        <title>Command Line Essentials &middot; Brycematheson.io</title>
+        <link rel="canonical" href="http://brycematheson.io" />
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="">
+        <link rel="stylesheet" type="text/css" href="http://brycematheson.io/css/main.css"/>
+        <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300|Montserrat:700" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    </head>
+
+<body>
+<!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chrome/‎">install Google Chrome</a> to experience this site.</p><![endif]-->
+
+    <header id="site-header">
+        <div class="container">
+            <a href="http://brycematheson.io" alt="Brycematheson.io"><h1 class="blog-title">Brycematheson.io</h1></a>
+
+            <div class="menu">
+            
+                <li class="site-nav-item">
+                    <a title="Articles" href="http://brycematheson.io/post/">Articles</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Photo" href="http://brycematheson.io/photo/">Photo</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Github" href="https://github.com/brycematheson">Github</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="LinkedIn" href="https://www.linkedin.com/in/brycematheson">LinkedIn</a>
+                </li>
+            
+                <li class="site-nav-item">
+                    <a title="Twitter" href="https://twitter.com/brycematheson">Twitter</a>
+                </li>
+            
+            </div>
+        </div>
+    </header>
+<main class="content" role="main">
+	<div class="container">
+		<article class="post">
+	<header class="post-header">
+        <h3 class="p-post-title">Command Line Essentials</h3>
+        <p class="f-post-time"><time datetime="2015-02-20T18:50:20-07:00">February 20, 2015</time></p>
+    </header>
+    <span class="clear"></span>
+    <section class="post-content">
+        
+
+<p>It wasn&rsquo;t too long ago that I was terrified of the terminal. It&rsquo;s pretty daunting to be staring at a blank screen with a blinking cursor taunting you. Want to know something? It&rsquo;s not as scary as you might think. It would take years to master the command line, so don&rsquo;t expect to know everything all at once. Everyday, try and find little ways to slowly blend the terminal with basic tasks. Slowly, you&rsquo;ll find that it makes a lot of things easier.</p>
+
+<h2 id="terminology">Terminology</h2>
+
+<p>You may have heard words such as &#8220;terminal&#8221;, &#8220;command line&#8221;, &#8220;shell&#8221;, &#8220;bash&#8221;, etc. There are slight differences, but generally, they all refer to the same thing.</p>
+
+<h2 id="terminal-vs-iterm">Terminal vs iTerm</h2>
+
+<p>&#8216;iTerm&rsquo; is a terminal replacement. It&rsquo;s simply a program that adds some features for developers and advanced users such as split panes, paste history, and a plethora of others. If you don&rsquo;t need any of these, you can use the basic terminal just as well. If you&rsquo;re looking for additional functionality, this might be worth looking into.</p>
+
+<p>Honestly, I tried iTerm and didn&rsquo;t care too much for it. I prefer <a href="http://totalterminal.binaryage.com/" target="_blank">TotalTerminal</a>. I don&rsquo;t have a bunch of needs for extra fancy features, but one thing I do love is the &#8220;visor&#8221; functionality. From anywhere on my computer, I can have a terminal window slide down from the top of my screen, simply by pressing a keyboard shortcut. This is much easier than navigating to Finder, then Applications, then Utilities, then Terminal. Or even faster than searching for it through Spotlight. Many people use the standard  <span class="smallcode">Command/Ctrl + ~</span> shortcut, but I&rsquo;ve customized mine to <span class="smallcode">Control + Control</span>.</p>
+
+<p>Another nifty feature is being able to have multiple terminal windows running different processes. I generally have a Jekyll or Grunt server running in one window, and then I use the other window for navigating through folders or committing changes on Git. It works similar to using tabs in Chrome or any other browser.</p>
+
+<h2 id="basic-commands">Basic Commands</h2>
+
+<p>Let&rsquo;s get started. Go ahead and open up a terminal window and play with the following commands. Each command should be entered on a single line, and then followed by the <span class="smallcode">[return/enter]</span> key.</p>
+
+<p><span class="smallcode">pwd</span> &#8211; stands for &#8220;print working directory&#8221;. It lists the folder that you&rsquo;re currently in (i.e. /Users/yourusername/Documents)</p>
+
+<p><span class="smallcode">cd</span> &#8211; stands for &#8220;change directory&#8221;. This lets you move in and out of folders. For example, if you&rsquo;re in the &#8220;Documents&#8221; directory and want to move to another directory underneath named &#8220;School&#8221;, you would type <span class="smallcode">cd School</span>.</p>
+
+<p><span class="smallcode">cd ..</span> &#8211; Move &#8220;back&#8221; or &#8220;up&#8221; a folder. In our previous example, this would move you out of the &#8220;School&#8221; directory and back into the &#8220;Documents&#8221; folder.</p>
+
+<p><span class="smallcode">cd ~</span> &#8211; Takes you back to your home directory. Let&rsquo;s say you&rsquo;re deep in a folder structure (i.e. /Users/yourusername/Documents/School/Senior/Thesis). Rather than having to type <span class="smallcode">cd ..</span> a billion times, you could type <span class="smallcode">cd ~</span> to take you back to &#8220;/Users/yourusername&#8221;.</p>
+
+<p><span class="smallcode">open .</span> &#8211; Opens the current working directory in finder. I use this one ALL the time and love it.</p>
+
+<p><span class="smallcode">clear</span> &#8211; Clears the screen of all text. Sometimes the output of all previous commands can make me claustrophobic. This gives me a fresh, blank screen.</p>
+
+<p><span class="smallcode">rm [filename]</span> &#8211; Deletes a file.</p>
+
+<p><span class="smallcode">mkdir [directoryname]</span> &#8211; Stands for &#8220;make directory&#8221;. Creates a new folder.</p>
+
+<p><span class="smallcode">ls</span> &#8211; Stands for &#8220;list&#8221;. Shows a listing of all the files/folders in a directory. Often, I find myself adding an <span class="smallcode">-al</span> flag. <span class="smallcode">-a</span> shows &#8220;all files&#8221; (hidden files included), and <span class="smallcode">-l</span> shows a long listing of files, rather than in a three-column short listing. This to me, is easier to read. You can combine the two flags together with the ls command by typing <span class="smallcode">ls -al</span>.</p>
+
+<p><span class="smallcode">sudo [command]</span> &#8211; Stands for &#8220;super user do&#8221;. Sometimes you need elevated privileges to run a certain command. Typing <span class="smallcode">sudo</span> before the command will prompt for your password, and will then run the command. Be careful when using this command. If you don&rsquo;t know what you&rsquo;re doing, you can make some unwanted changes. If at all possible, run the command first <em>without</em> sudo, and only add it in if needed.</p>
+
+<p><span class="smallcode">control + c</span> &#8211; Cancels a current process. For example, if you&rsquo;re running a script, you can kill (cancel) it.</p>
+
+<p><span class="smallcode">[Up arrow]</span> &#8211; You can see a list of all the previous commands you&rsquo;ve entered by pressing the up arrow key. This saves time rather than having to type in a command over and over again.</p>
+
+<p><span class="smallcode">[tab]</span> &#8211; Autocomplete. Let&rsquo;s say I have a long folder name such &#8220;Discertation&#8221;. Start typing the first few letters of the file/folder to distinguish it from other files, and then press the &#8220;tab&#8221; key. It will autocomplete the filename for you.</p>
+
+<h2 id="give-it-a-try">Give it a try!</h2>
+
+<p>Well, there are a few commands to get you started and make you just dangerous enough. Practice makes perfect! I use most all of these commands on a daily basis, but there are thousands of additional commands that you can learn. Baby steps.</p>
+
+<h2 id="comments">Comments</h2>
+
+<p>Did I miss any of your favorites? Let me know, and I&rsquo;ll list them here.</p>
+
+    </section>
+
+    
+
+    <footer class="post-footer">                        
+        <section class="f-2">
+            <section class="share">
+                <span>Share:
+                <a class="icon-twitter" href="http://twitter.com/share?text=Command%20Line%20Essentials&url=http%3a%2f%2fbrycematheson.io%2fpost%2fcommand-line-essentials%2f"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fbrycematheson.io%2fpost%2fcommand-line-essentials%2f"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="fa fa-facebook"></i>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http%3a%2f%2fbrycematheson.io%2fpost%2fcommand-line-essentials%2f"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <i class="fa fa-google-plus"></i>
+                </a>
+                </span>
+            </section>
+
+            
+        </section>
+                
+        <section id="comments">
+            <div id="disqus_thread" class="post-comments"></div>
+            <script type="text/javascript">
+              if (window.location.hostname != "localhost") {
+                var disqus_shortname = 'brycemathesonio';
+                (function() {
+                  var dsq = document.createElement('script');
+                  dsq.type = 'text/javascript';
+                  dsq.async = true;
+                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+              }
+            </script>
+            <noscript>
+              Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+            </noscript>
+        </section>
+                
+    </footer>
+</article>
+	</div>
+</main>
+    <footer id="site-footer">
+        <div class="container">
+            <section>Copyright &copy; <a href="http://brycematheson.io"></a> 2017 | All rights reserved.</section>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="http://brycematheson.iojs/fittext.js"></script>
+    <script type="text/javascript">
+      $(".heading").fitText();
+    </script>
+
+
+</body>
+</html>
