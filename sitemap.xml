@@ -197,6 +197,11 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/photo/1634-w-sorenson/</loc>
+    <lastmod>2014-09-05T21:11:05-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/photo/boston/</loc>
     <lastmod>2014-08-14T20:36:50-07:00</lastmod>
   </url>
@@ -324,6 +329,12 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/architecture/</loc>
+    <lastmod>2014-09-05T21:11:05-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/</loc>
     <lastmod>2016-11-24T12:26:23-07:00</lastmod>
     <priority>0</priority>
@@ -403,7 +414,7 @@
   
   <url>
     <loc>http://brycematheson.io/photo/</loc>
-    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
+    <lastmod>2014-09-05T21:11:05-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -428,6 +439,12 @@
   <url>
     <loc>http://brycematheson.io/tags/proposal/</loc>
     <lastmod>2014-07-17T20:00:51-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/real-estate/</loc>
+    <lastmod>2014-09-05T21:11:05-07:00</lastmod>
     <priority>0</priority>
   </url>
   
