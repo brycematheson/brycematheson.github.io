@@ -232,6 +232,21 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/photo/mesa-falls/</loc>
+    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/yellowstone-national-park/</loc>
+    <lastmod>2014-05-26T19:03:25-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/idaho-falls-green-belt/</loc>
+    <lastmod>2014-05-17T19:03:25-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/photo/tautphaus-park-zoo/</loc>
     <lastmod>2014-05-17T07:40:35-07:00</lastmod>
   </url>
@@ -287,8 +302,20 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/idaho-falls/</loc>
+    <lastmod>2014-05-17T19:03:25-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/kor/</loc>
     <lastmod>2014-05-15T07:30:53-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/landscape/</loc>
+    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -300,7 +327,7 @@
   
   <url>
     <loc>http://brycematheson.io/photo/</loc>
-    <lastmod>2014-05-17T07:40:35-07:00</lastmod>
+    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -323,6 +350,12 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/scenery/</loc>
+    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/strawberries/</loc>
     <lastmod>2014-04-19T07:05:36-07:00</lastmod>
     <priority>0</priority>
@@ -340,8 +373,14 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/water/</loc>
+    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/wildlife/</loc>
-    <lastmod>2014-05-17T07:40:35-07:00</lastmod>
+    <lastmod>2014-05-26T19:03:25-07:00</lastmod>
     <priority>0</priority>
   </url>
   
