@@ -65,6 +65,10 @@ a:active,a:hover {
 	outline:0;
 }
 
+a.comments {
+	display:block;
+}
+
 h1 {
 	font-size:3.33333rem;
 	margin:.67em 0 .1em;

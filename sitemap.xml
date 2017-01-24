@@ -197,6 +197,11 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/photo/boston/</loc>
+    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/post/my-experience-with-a-mac/</loc>
     <lastmod>2014-08-03T18:50:20-07:00</lastmod>
   </url>
@@ -209,6 +214,16 @@
   <url>
     <loc>http://brycematheson.io/post/how-to-record-your-screen-on-a-mac/</loc>
     <lastmod>2014-07-26T18:50:20-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/grasshopper-macro/</loc>
+    <lastmod>2014-07-22T20:28:48-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/roommates-of-1019/</loc>
+    <lastmod>2014-07-20T20:19:58-07:00</lastmod>
   </url>
   
   <url>
@@ -298,7 +313,7 @@
   
   <url>
     <loc>http://brycematheson.io/tags/50mm/</loc>
-    <lastmod>2014-04-19T07:05:36-07:00</lastmod>
+    <lastmod>2014-07-22T20:28:48-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -311,6 +326,12 @@
   <url>
     <loc>http://brycematheson.io/</loc>
     <lastmod>2016-11-24T12:26:23-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/city/</loc>
+    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -345,6 +366,12 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/insect/</loc>
+    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/kor/</loc>
     <lastmod>2014-05-15T07:30:53-07:00</lastmod>
     <priority>0</priority>
@@ -357,14 +384,26 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/lds/</loc>
+    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/longboards/</loc>
     <lastmod>2014-05-15T07:30:53-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/macro/</loc>
+    <lastmod>2014-07-22T20:28:48-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/photo/</loc>
-    <lastmod>2014-07-17T20:00:51-07:00</lastmod>
+    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -394,7 +433,7 @@
   
   <url>
     <loc>http://brycematheson.io/tags/roommate/</loc>
-    <lastmod>2014-07-04T19:53:36-07:00</lastmod>
+    <lastmod>2014-07-20T20:19:58-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -407,6 +446,12 @@
   <url>
     <loc>http://brycematheson.io/tags/scenery/</loc>
     <lastmod>2014-06-21T19:42:05-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/sports/</loc>
+    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -424,6 +469,12 @@
   <url>
     <loc>http://brycematheson.io/tags/test/</loc>
     <lastmod>2016-11-24T12:26:23-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/travel/</loc>
+    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
     <priority>0</priority>
   </url>
   
