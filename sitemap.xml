@@ -217,8 +217,23 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/photo/lincoln-sylvia-proposal/</loc>
+    <lastmod>2014-07-17T20:00:51-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/post/understanding-raid/</loc>
     <lastmod>2014-07-16T18:50:20-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/girls-of-514/</loc>
+    <lastmod>2014-07-04T19:53:36-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/kristy-cameron-engagements/</loc>
+    <lastmod>2014-07-04T19:47:04-07:00</lastmod>
   </url>
   
   <url>
@@ -229,6 +244,16 @@
   <url>
     <loc>http://brycematheson.io/post/i-dont-use-anti-virus-software-am-i-crazy/</loc>
     <lastmod>2014-07-01T18:50:20-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/sawtell-peak/</loc>
+    <lastmod>2014-06-21T19:42:05-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/tannyn-portrait/</loc>
+    <lastmod>2014-06-07T19:37:35-07:00</lastmod>
   </url>
   
   <url>
@@ -290,6 +315,18 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/engagement/</loc>
+    <lastmod>2014-07-17T20:00:51-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/engagements/</loc>
+    <lastmod>2014-07-04T19:47:04-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/food/</loc>
     <lastmod>2014-04-19T07:05:36-07:00</lastmod>
     <priority>0</priority>
@@ -315,7 +352,7 @@
   
   <url>
     <loc>http://brycematheson.io/tags/landscape/</loc>
-    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
+    <lastmod>2014-06-21T19:42:05-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -327,13 +364,13 @@
   
   <url>
     <loc>http://brycematheson.io/photo/</loc>
-    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
+    <lastmod>2014-07-17T20:00:51-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://brycematheson.io/tags/portrait/</loc>
-    <lastmod>2014-05-14T07:23:30-07:00</lastmod>
+    <lastmod>2014-07-17T20:00:51-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -350,8 +387,26 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/proposal/</loc>
+    <lastmod>2014-07-17T20:00:51-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/roommate/</loc>
+    <lastmod>2014-07-04T19:53:36-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/salt-lake/</loc>
+    <lastmod>2014-07-04T19:53:36-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/scenery/</loc>
-    <lastmod>2014-05-31T19:03:25-07:00</lastmod>
+    <lastmod>2014-06-21T19:42:05-07:00</lastmod>
     <priority>0</priority>
   </url>
   
