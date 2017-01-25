@@ -192,6 +192,16 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/photo/we-are-the-strike/</loc>
+    <lastmod>2014-09-19T22:40:05-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/photo/rexburg-temple/</loc>
+    <lastmod>2014-09-15T22:28:13-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/post/the-most-important-camera-accessory/</loc>
     <lastmod>2014-09-09T18:50:20-07:00</lastmod>
   </url>
@@ -347,6 +357,12 @@
   </url>
   
   <url>
+    <loc>http://brycematheson.io/tags/concert/</loc>
+    <lastmod>2014-09-19T22:40:05-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/tags/engagement/</loc>
     <lastmod>2014-07-17T20:00:51-07:00</lastmod>
     <priority>0</priority>
@@ -396,7 +412,7 @@
   
   <url>
     <loc>http://brycematheson.io/tags/lds/</loc>
-    <lastmod>2014-08-14T20:36:50-07:00</lastmod>
+    <lastmod>2014-09-15T22:28:13-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -414,7 +430,7 @@
   
   <url>
     <loc>http://brycematheson.io/photo/</loc>
-    <lastmod>2014-09-05T21:11:05-07:00</lastmod>
+    <lastmod>2014-09-19T22:40:05-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -445,6 +461,12 @@
   <url>
     <loc>http://brycematheson.io/tags/real-estate/</loc>
     <lastmod>2014-09-05T21:11:05-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/rexburg/</loc>
+    <lastmod>2014-09-15T22:28:13-07:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -480,6 +502,12 @@
   
   <url>
     <loc>http://brycematheson.io/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/temple/</loc>
+    <lastmod>2014-09-15T22:28:13-07:00</lastmod>
     <priority>0</priority>
   </url>
   
