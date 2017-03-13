@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://brycematheson.io/post/no-such-interface-supported/</loc>
+    <lastmod>2017-03-12T20:06:38-06:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://brycematheson.io/post/webscraping-with-powershell/</loc>
     <lastmod>2016-11-24T12:26:23-07:00</lastmod>
   </url>
@@ -346,7 +351,7 @@
   
   <url>
     <loc>http://brycematheson.io/</loc>
-    <lastmod>2016-11-24T12:26:23-07:00</lastmod>
+    <lastmod>2017-03-12T20:06:38-06:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -371,6 +376,12 @@
   <url>
     <loc>http://brycematheson.io/tags/engagements/</loc>
     <lastmod>2014-07-04T19:47:04-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/excel/</loc>
+    <lastmod>2017-03-12T20:06:38-06:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -442,7 +453,7 @@
   
   <url>
     <loc>http://brycematheson.io/post/</loc>
-    <lastmod>2016-11-24T12:26:23-07:00</lastmod>
+    <lastmod>2017-03-12T20:06:38-06:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -473,6 +484,12 @@
   <url>
     <loc>http://brycematheson.io/tags/roommate/</loc>
     <lastmod>2014-07-20T20:19:58-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://brycematheson.io/tags/runtime-error/</loc>
+    <lastmod>2017-03-12T20:06:38-06:00</lastmod>
     <priority>0</priority>
   </url>
   

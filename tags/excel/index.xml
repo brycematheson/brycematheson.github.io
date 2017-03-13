@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Excel on Brycematheson.io</title>
+    <link>http://brycematheson.io/tags/excel/index.xml</link>
+    <description>Recent content in Excel on Brycematheson.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Brycematheson.io. All Rights Reserved.</copyright>
+    <atom:link href="http://brycematheson.io/tags/excel/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Runtime Error: No such interface supported</title>
+      <link>http://brycematheson.io/post/no-such-interface-supported/</link>
+      <pubDate>Sun, 12 Mar 2017 20:06:38 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/no-such-interface-supported/</guid>
+      <description>&lt;p&gt;You know those errors that you just can&amp;rsquo;t seem to find the answer to, no matter how much you peruse Google? This was one of them. I use an Excel macro that takes some entered information, and then e-mails it to a specific list of individuals. While this script has worked time and time again, and the code hasn&amp;rsquo;t been altered in any way, it suddenly quit working. I kept getting a &amp;ldquo;Runtime Error: No such interface supported.&amp;rdquo; message.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/no-such-interface-2.PNG&#34; alt=&#34;No Such Interface Supported&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After clicking the &amp;ldquo;Debug&amp;rdquo; button, I was brought to this section of code. As I mentioned earlier, nothing had changed in the code, so I knew there was nothing wrong with this snippet.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/no-such-interface-1.PNG&#34; alt=&#34;No Such Interface Supported&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Anyway, long story short, after much trial and error, I remembered that we had recently installed &amp;ldquo;Skype for Business 2016&amp;rdquo; on some of the machines.&lt;/p&gt;
+
+&lt;p&gt;I could&amp;rsquo;ve done a little more troubleshooting as to &lt;em&gt;why&lt;/em&gt; this prevented the script from working, but I was too lazy. It fixed it, and that&amp;rsquo;s all that mattered. Anyway, the point of all of this is to hopefully save others time from having to pull their hair out trying to fix the same issue I had.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

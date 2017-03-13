@@ -7,8 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Brycematheson.io. All Rights Reserved.</copyright>
-    <lastBuildDate>Thu, 24 Nov 2016 12:26:23 -0700</lastBuildDate>
+    <lastBuildDate>Sun, 12 Mar 2017 20:06:38 -0600</lastBuildDate>
     <atom:link href="http://brycematheson.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Runtime Error: No such interface supported</title>
+      <link>http://brycematheson.io/post/no-such-interface-supported/</link>
+      <pubDate>Sun, 12 Mar 2017 20:06:38 -0600</pubDate>
+      
+      <guid>http://brycematheson.io/post/no-such-interface-supported/</guid>
+      <description>&lt;p&gt;You know those errors that you just can&amp;rsquo;t seem to find the answer to, no matter how much you peruse Google? This was one of them. I use an Excel macro that takes some entered information, and then e-mails it to a specific list of individuals. While this script has worked time and time again, and the code hasn&amp;rsquo;t been altered in any way, it suddenly quit working. I kept getting a &amp;ldquo;Runtime Error: No such interface supported.&amp;rdquo; message.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/no-such-interface-2.PNG&#34; alt=&#34;No Such Interface Supported&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After clicking the &amp;ldquo;Debug&amp;rdquo; button, I was brought to this section of code. As I mentioned earlier, nothing had changed in the code, so I knew there was nothing wrong with this snippet.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://brycematheson.io/img/post_images/no-such-interface-1.PNG&#34; alt=&#34;No Such Interface Supported&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Anyway, long story short, after much trial and error, I remembered that we had recently installed &amp;ldquo;Skype for Business 2016&amp;rdquo; on some of the machines.&lt;/p&gt;
+
+&lt;p&gt;I could&amp;rsquo;ve done a little more troubleshooting as to &lt;em&gt;why&lt;/em&gt; this prevented the script from working, but I was too lazy. It fixed it, and that&amp;rsquo;s all that mattered. Anyway, the point of all of this is to hopefully save others time from having to pull their hair out trying to fix the same issue I had.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Webscraping with Powershell</title>
@@ -990,72 +1010,6 @@ At this point, if you do a &lt;span class=&#34;smallcode&#34;&gt;show run&lt;/sp
 &lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;I don&amp;rsquo;t mean to come off as a hater of Dave Ramsey and his principles. I think he does an incredible job at getting people motivated to get out of debt, and I&amp;rsquo;ll continue to listen to his radio show. The problem is that the audience that he caters to are a small group, and his teachings don&amp;rsquo;t necessarily reflect the general population. Dave does a great job teaching the uneducated and those looking for a change in their life, and his principles of saving and not going into debt are great. However, his investment advice leaves much to be desired.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>10 Things I Wish I Could Tell My College Self</title>
-      <link>http://brycematheson.io/post/10-things-i-wish-i-could-tell-my-college-self/</link>
-      <pubDate>Sat, 19 Dec 2015 09:27:38 -0700</pubDate>
-      
-      <guid>http://brycematheson.io/post/10-things-i-wish-i-could-tell-my-college-self/</guid>
-      <description>
-
-&lt;p&gt;I graduated college, yesterday. As such, it&amp;rsquo;s been a little bit of an emotional morning, as homo as that makes me sound and feel. I&amp;rsquo;ve been sitting here reminiscing about all the great times that I&amp;rsquo;ve had, people I&amp;rsquo;ve met, and experiences that I&amp;rsquo;ll hold and treasure forever. I also think back to all the dumb, idiotic things I did, and wish I could go back in time and do-over. My younger brother starts school in two weeks, at the very same University from which I just graduated. Here are ten things that I wish I could go back and tell my younger, college self.&lt;/p&gt;
-
-&lt;h2 id=&#34;1-internships&#34;&gt;1. Internships&lt;/h2&gt;
-
-&lt;p&gt;About my Junior year in school, I started to notice people doing these weird things called &amp;ldquo;internships.&amp;rdquo; Honestly, I&amp;rsquo;m not really sure why I put them off for so long, but one day, it hit me like a ton of bricks. I was faced with an all-too-startling reality that I was behind everyone else. And I was. Although it was a requirement for graduation, for some reason I told myself that internships are something that &amp;ldquo;seniors do.&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;I scrambled to find something that would fulfill the requirements. I submitted resumes upon resumes upon resumes, interviewed multiple places, and STILL heard nothing from any of them for four months. Soon, offers started to trickle in, and I was actually able to complete two internships back-to-back. This provided me enough experience to land the job I have currently (working for a different company than where I did the internship). If I could go back and do it all over, I would jump on internships much earlier, even trying to complete one a year, during the summers.&lt;/p&gt;
-
-&lt;p&gt;Whether it&amp;rsquo;s paid or not, experience is invaluable.&lt;/p&gt;
-
-&lt;h2 id=&#34;2-you-don-t-have-to-land-a-job-working-for-google&#34;&gt;2. You don&amp;rsquo;t have to land a job working for Google&lt;/h2&gt;
-
-&lt;p&gt;Going along with my first point, I was a little disappointed when I got internship offers from a Church and a Hospital, while others were getting offers from Google, Apple, Intel, and the like. After speaking with friends later, I realized that their employment doesn&amp;rsquo;t sound nearly as enjoyable as mine does. These friends, working at these humongous companies, are a very small cog in an incredibly large machine. Their work makes little to no difference to the company as a whole, and they could easily be fired tomorrow without anyone noticing.&lt;/p&gt;
-
-&lt;p&gt;I landed a job for a small company in Idaho, with about 200 employees. The IT department consists of myself and one other person. When things aren&amp;rsquo;t running, I&amp;rsquo;m the one responsible for it. And I &lt;em&gt;love&lt;/em&gt; it. I wouldn&amp;rsquo;t have it any other way. Sure, Google may pay better wages, and I&amp;rsquo;m sure their departments are actually allocated money with which to spend, but I&amp;rsquo;m comfortable with where I&amp;rsquo;m at, and I feel like a make a difference &lt;em&gt;daily&lt;/em&gt;.&lt;/p&gt;
-
-&lt;h2 id=&#34;3-take-stupid-fun-classes&#34;&gt;3. Take stupid/fun classes&lt;/h2&gt;
-
-&lt;p&gt;I worried too much about only taking classes that would fulfill my major requirements. I maybe took one or two elective classes, but I should&amp;rsquo;ve branched out more. I wanted to take a welding class. And an accounting class. And an archery class. I never took any of them. Those had absolutely nothing to do with anything, but who cares? If you&amp;rsquo;re not sure what you want to do, try it out.&lt;/p&gt;
-
-&lt;h2 id=&#34;4-travel&#34;&gt;4. Travel&lt;/h2&gt;
-
-&lt;p&gt;This may sound dumb, especially considering that most college budgets are relatively limited in terms of funds, but that doesn&amp;rsquo;t mean you have to spend an arm and a leg. Hop in the car, and go to Vegas for the weekend. Or Arches National Park. Or even, fly to LA and take a 3-day cruise to Mexico. Travel. Do it. Grab a couple friends to split gas and hotel costs. Because once you graduate, you&amp;rsquo;ll only get 10 vacation days a year, have three kids, and you&amp;rsquo;ll regret not taking more advantage of your free time.&lt;/p&gt;
-
-&lt;h2 id=&#34;5-date-more&#34;&gt;5. Date more&lt;/h2&gt;
-
-&lt;p&gt;Throughout school, I was so worried about having &amp;ldquo;someone,&amp;rdquo; that I feel like I jumped into long-term relationships too quickly. The few girls I did date in school were incredible, and I don&amp;rsquo;t regret that at all. But I do wish I would&amp;rsquo;ve dated more girls, for shorter amounts of time. Taste all the different flavors. I wish I would have asked out more complete strangers. And please be more creative than &amp;ldquo;dinner and a movie&amp;rdquo;. Sometimes just grabbing some hot chocolate and going for a walk is best.&lt;/p&gt;
-
-&lt;p&gt;In Mormon culture, it&amp;rsquo;s easy to feel like a failure if you leave college without finding a spouse. I definitely don&amp;rsquo;t feel that I can sympathize with that crowd, but I do understand how the dating pool dries up considerably once you leave. So live it up. Date. A lot.&lt;/p&gt;
-
-&lt;h2 id=&#34;6-quit-rushing-but-don-t-stall-either&#34;&gt;6. Quit rushing (but don&amp;rsquo;t stall, either)&lt;/h2&gt;
-
-&lt;p&gt;Why I finished school in three and a half years, I&amp;rsquo;ll never know. I always took at least 3 credits during the Summer over the break, sometimes I even took a full load of 12 credits. Maybe I was trying to save money? Or just &amp;ldquo;be done with it all&amp;rdquo; so I could move onto a different stage of life? I regret that slightly. Live it up, take your time. There&amp;rsquo;s really no rush. College has been the most fun time of my life, and I think I should have soaked it up more.&lt;/p&gt;
-
-&lt;h2 id=&#34;7-hold-off-on-buying-books&#34;&gt;7. Hold off on buying books&lt;/h2&gt;
-
-&lt;p&gt;I can&amp;rsquo;t even count the number of times I purchased college textbooks that cost hundreds of dollars, just to discover that the professor rarely, if ever, referenced them. Wait until you NEED the book before buying it. Most of the time, I resorted to renting books, which saved lots of money as well.&lt;/p&gt;
-
-&lt;h2 id=&#34;8-working-is-a-good-thing&#34;&gt;8. Working is a good thing&lt;/h2&gt;
-
-&lt;p&gt;I worked anywhere from 20 to 40 hours a week all through school, because I refused to ask Mommy and Daddy for money. I thought I would find myself &amp;ldquo;missing out&amp;rdquo; a lot, because I would be at work while everyone else was having fun or partying. In reality, my roommates who didn&amp;rsquo;t work, mostly just sat on the couch watching TV all day, and then once I got home, we would go out and party. Sure, I bet I missed out on a couple of things, because I was at work. But in the rare event my work times conflicted with a social event, my boss was more than flexible in letting me off, or I could request the time off in advanced.&lt;/p&gt;
-
-&lt;p&gt;Work took up just enough of my schedule to allow me to feel productive as well. I never had enough free time to be bored.&lt;/p&gt;
-
-&lt;h2 id=&#34;9-it-s-okay-that-you-re-broke&#34;&gt;9. It&amp;rsquo;s okay that you&amp;rsquo;re broke&lt;/h2&gt;
-
-&lt;p&gt;So what if you only have $0.62 in your bank account. It&amp;rsquo;s okay. Mom and Dad are there if an emergency happens. I always wanted to be super financially secure and stable all through college. I remember expressing this to my Mom once and she said, &amp;ldquo;It&amp;rsquo;s okay, honey. It&amp;rsquo;s not your job to be wealthy in college. Your job right now is to get through school. Once you graduate, your job then will be to provide and support yourself.&amp;rdquo; That was really comforting. So you don&amp;rsquo;t have more than $300 in savings? It&amp;rsquo;s okay.&lt;/p&gt;
-
-&lt;h2 id=&#34;10-success-comes-from-humility-and-hard-work-no-you-re-not-the-shiz&#34;&gt;10. Success comes from humility and hard work (no, you&amp;rsquo;re not the shiz)&lt;/h2&gt;
-
-&lt;p&gt;Sadly, I&amp;rsquo;ve had a somewhat cocky attitude my entire life, especially throughout college. Often times, I found that my cockiness was just a failed attempt at covering up insecurities. You&amp;rsquo;re not going to get anywhere with that attitude. Be confident, but not cocky. Success is going to come through hard work, grit, and humility.&lt;/p&gt;
-
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;In all, I had an incredible time in college. I&amp;rsquo;m glad to be done, and I&amp;rsquo;m excited for the new phase in my life. But I&amp;rsquo;m always going to miss it.&lt;/p&gt;
 </description>
     </item>
     
